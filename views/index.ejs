@@ -1,0 +1,90 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Coding Interview</title>
+    <link rel='stylesheet' href='/stylesheets/bootstrap.min.css' />
+    <link rel='stylesheet' href='/stylesheets/style.css' />
+    <script src="/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
+  </head>
+  <body>
+    <div class="navbar navbar-fixed-top">
+      <div class="navbar-inner">
+        <div class="container">
+          <a class="btn btn-navbar" data-toggle="collapse" data-target=".nav-collapse">
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+            <span class="icon-bar"></span>
+          </a>
+          <a class="brand" href="/">Coding Interview</a>
+          <div class="nav-collapse collapse">
+            <ul class="nav">
+              <li><a href="#">List</a></li>
+              <li><a href="#">User Info</a></li>
+            </ul>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div class="container">
+      <h3>Question</h3>
+      <div class="well">
+        <p style="color: rgb(0, 0, 0); font-family: '맑은 고딕', 돋움, 'Trebuchet MS', sans-serif; font-size: 16px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px;">
+          <span>1부터 5까지의 숫자를 영어로 쓰면</span>
+          <span class="Apple-converted-space">&nbsp;</span>
+          <var style="font-family: 'times new roman'; font-style: italic; font-size: 19px;">one, two, three, four,
+            five</var>
+          <span class="Apple-converted-space">&nbsp;</span>
+          <span>이고,</span>
+          <br>
+          <span>각 단어의 길이를 더하면 3 + 3 + 5 + 4 + 4 = 19 이므로 사용된 글자는 모두 19개입니다.</span>
+        </p>
+
+        <p style="color: rgb(0, 0, 0); font-family: '맑은 고딕', 돋움, 'Trebuchet MS', sans-serif; font-size: 16px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px;">
+          <span>1부터 1,000까지 영어로 썼을 때는 모두 몇 개의 글자를 사용해야 할까요?</span>
+        </p>
+
+        <p style="color: rgb(0, 0, 0); font-family: '맑은 고딕', 돋움, 'Trebuchet MS', sans-serif; font-size: 16px; font-style: normal; font-variant: normal; font-weight: normal; letter-spacing: normal; line-height: normal; orphans: auto; text-align: start; text-indent: 0px; text-transform: none; white-space: normal; widows: auto; word-spacing: 0px; -webkit-text-stroke-width: 0px;">
+          <strong>참고:</strong>
+          <span>&nbsp;빈 칸이나 하이픈('-')은 셈에서 제외하며,&nbsp;단어 사이의</span>
+          <span class="Apple-converted-space">&nbsp;</span>
+          <var style="font-family: 'times new roman'; font-style: italic; font-size: 19px;">and</var>
+          <span class="Apple-converted-space">&nbsp;</span>
+          <span>는 셈에 넣습니다.</span>
+          <br>
+          <span>&nbsp; 예를 들어 342를 영어로 쓰면</span>
+          <span class="Apple-converted-space">&nbsp;</span>
+          <var style="font-family: 'times new roman'; font-style: italic; font-size: 19px;">three hundred and
+            forty-two</var>
+          <span class="Apple-converted-space">&nbsp;</span>
+          <span>가 되어서 23 글자,</span>
+          <br>
+          <span>&nbsp; 115 =</span>
+          <span class="Apple-converted-space">&nbsp;</span>
+          <var style="font-family: 'times new roman'; font-style: italic; font-size: 19px;">one hundred and
+            fifteen</var>
+          <span class="Apple-converted-space">&nbsp;</span>
+          <span>의 경우에는 20 글자가 됩니다.</span>
+        </p>
+      </div>
+      <h3>Answer</h3>
+      <div id="editor">function foo(items) {
+  var x = "All this is syntax highlighted";
+  return x;
+}</div>
+      <script>
+        var editor = ace.edit("editor");
+        editor.setTheme("ace/theme/monokai");
+        editor.getSession().setMode("ace/mode/javascript");
+      </script>
+      <h3>Chat</h3>
+      <div class="well" style="height:200px;">
+        <div class="span2">
+          <!--Sidebar content-->
+        </div>
+        <div class="span8">
+          <!--Body content-->
+        </div>
+      </div>
+    </div>
+  </body>
+</html>
