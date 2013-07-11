@@ -9,6 +9,6 @@
     "express": "3.3.4",
     "ejs": "*",
     "less-middleware": "*",
-    "mongodb": "* "
+    "mongoose": "*"
   }
 }
