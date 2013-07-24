@@ -6,6 +6,7 @@
 var express = require('express')
   , routes = require('./routes')
   , user = require('./routes/user')
+  , interview = require('./routes/interview')
   , question = require('./routes/question')
   , http = require('http')
   , path = require('path');
@@ -31,7 +32,8 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-app.get('/', routes.index);
+//app.get('/', routes.index);
+app.get('/interview', interview.interview);
 app.get('/users', user.list);
 app.get('/insertMock', question.insertMock);
 
