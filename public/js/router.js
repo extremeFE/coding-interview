@@ -3,8 +3,9 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'views/interview'
-], function($, _, Backbone, InterviewView) {
+  'views/interview',
+  'views/home'
+], function($, _, Backbone, InterviewView, HomeView) {
 
   var AppRouter = Backbone.Router.extend({
     routes: {
@@ -30,8 +31,8 @@ define([
     app_router.on('route:defaultAction', function (actions) {
 
       // We have no matching route, lets display the home page
-//      var homeView = new HomeView();
-//      homeView.render();
+      var homeView = new HomeView();
+      homeView.render();
     });
 
     // Unlike the above, we don't call render on this view as it will handle
