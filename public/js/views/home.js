@@ -3,8 +3,9 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'text!/templates/home.html'
-], function($, _, Backbone, homeTemplate) {
+  'text!/templates/home.html',
+  'text!/templates/created.html'
+], function($, _, Backbone, homeTemplate, createdTemplate) {
   var InterviewView = Backbone.View.extend({
     el: $('#container'),
     render: function() {
@@ -15,7 +16,7 @@ define([
     },
     createInterview : function() {
       var welEmail = $('#email');
-      console.log(welEmail.val())
+      this.$el.html(createdTemplate);
     }
   });
 
