@@ -16,7 +16,15 @@ define([
     },
     createInterview : function() {
       var welEmail = $('#email');
-      this.$el.html(createdTemplate);
+      var that = this;
+      $.ajax({
+        url: '/createInterview',
+        type: "POST",
+        data:'mail='+welEmail.val()
+      }).done(function(hResult){
+        var html = _.template(createdTemplate, {interview: hResult});
+        that.$el.html(html);
+      });
     }
   });
 

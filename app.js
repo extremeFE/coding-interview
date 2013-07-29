@@ -8,6 +8,7 @@ var express = require('express')
   , user = require('./routes/user')
   , interview = require('./routes/interview')
   , question = require('./routes/question')
+  , mail = require('./routes/mail')
   , http = require('http')
   , path = require('path');
 
@@ -34,6 +35,8 @@ if ('development' == app.get('env')) {
 
 //app.get('/', routes.index);
 app.get('/interview', interview.interview);
+//app.get('/sendMail', mail.sendMail);
+app.post('/createInterview', interview.create);
 app.get('/users', user.list);
 app.get('/insertMock', question.insertMock);
 

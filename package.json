@@ -9,6 +9,8 @@
     "express": "3.3.4",
     "ejs": "*",
     "less-middleware": "*",
-    "mongoose": "*"
+    "mongoose": "*",
+    "nodemailer": "*",
+    "underscore": "*"
   }
 }
