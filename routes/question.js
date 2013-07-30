@@ -3,7 +3,7 @@
  * question.
  */
 
-var model = require('./questionModel');
+var model = require('./interviewModel');
 var crypto = require("crypto");
 
 //var mongo = require('mongodb');

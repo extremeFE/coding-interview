@@ -1,10 +1,10 @@
+<link rel="stylesheet" type="text/css" href="/lib/summernote/summernote.css" />
+<link href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" rel="stylesheet">
+<script src="/lib/summernote/summernote.min.js" type="text/javascript" charset="utf-8"></script>
 <script src="/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <!--<script type="text/javascript" src="http://www.stalk.io/stalk.js" charset="utf-8" ></script>-->
   <h3>Question</h3>
-  <div class="well">
-    <h4><%= interviews[0].get('title') %></h4>
-    <%= interviews[0].get('content') %>
-  </div>
+  <div class="summernote"><%= interviews[0].get('content') %></div>
   <h3>Answer</h3>
   <div id="editor">function foo(items) {
   var x = "All this is syntax highlighted";

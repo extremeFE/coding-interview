@@ -3,7 +3,7 @@
  * GET home page.
  */
 
-var model = require('./questionModel');
+var model = require('./interviewModel');
 
 exports.index = function(req, res){
   model.find(function (err, docs) {

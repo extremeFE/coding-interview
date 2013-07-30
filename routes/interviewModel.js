@@ -5,4 +5,4 @@ var mySchema = Schema({ adminKey: String, interviewerKey: String, applicantKey: 
 var uri = 'mongodb://codinginterview:password@dharma.mongohq.com:10005/CodingInterview';
 var db = mongoose.createConnection(uri);
 
-module.exports = db.model('question', mySchema);
+module.exports = db.model('interviews', mySchema);
