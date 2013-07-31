@@ -1,7 +1,6 @@
 Realtime Coding Interview
 =========================
 
-*
 * version: 0.0.1
 
 # 목적
