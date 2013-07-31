@@ -14,7 +14,7 @@ Realtime Coding Interview
 1. brew install npm
 1. cd $PROJECT_HOME
 1. npm install
-1. npm intstall -g nodemon 
+1. npm install -g nodemon 
 
 
 # 실행방법
