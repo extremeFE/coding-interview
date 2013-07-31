@@ -14,20 +14,31 @@ var interviewTemplate = '<h3>실시간 코딩 인터뷰 페이지 생성 완료<
 
 exports.interview = function(req, res) {
   var id = req.body.id;
-  var key = req.body.key;
-  model.find(function (err, docs) {
+  var key = req.body.type;
+  model.find({_id:id}, function (err, docs) {
+    var type;
+    var hDoc = docs[0];
+
+    if (hDoc.adminKey === key) {
+      type = 'ADMIN';
+    } else if (hDoc.adminKey === key) {
+      type = 'INTERVIEWER';
+    } else {
+      type = 'APPLICANT';
+    }
+    
     if (err) return next(err);
-    res.send({ id: docs[0]._id, content: docs[0].content });
+    res.send({ id: hDoc._id, content: hDoc.content, type: type });
   });
 };
 
 var getKey = function(str) {
   var sha1 = crypto.createHash("sha1");
   sha1.update(str, "utf8");
-  return sha1.digest("base64");
+  return sha1.digest("hex");
 };
 
-exports.create = function(req, res){
+exports.create = function(req, res) {
   var email = req.body.mail;
   var time = new Date().getTime();
   var hData = {
@@ -36,9 +47,18 @@ exports.create = function(req, res){
     applicantKey: getKey(time+'applicant')
   };
 
-  return model.create(hData, function(err, hResult){
+  model.create(hData, function(err, hResult){
     var content = _.template(interviewTemplate, {interview: hResult});
     mail.sendMail(email, content)
     res.send(hResult);
+  });
+};
+
+exports.saveQuestion = function(req, res) {
+  var id = req.body.id;
+//  var type = req.body.type;
+  var content = req.body.content;
+  model.update({_id:id}, {content:content}, null, function(err){
+    res.send('success');
   });
 };

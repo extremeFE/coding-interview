@@ -34,9 +34,10 @@ if ('development' == app.get('env')) {
 }
 
 //app.get('/', routes.index);
-app.get('/interview', interview.interview);
+app.post('/interview', interview.interview);
 //app.get('/sendMail', mail.sendMail);
 app.post('/createInterview', interview.create);
+app.post('/saveQuestion', interview.saveQuestion);
 app.get('/users', user.list);
 app.get('/insertMock', question.insertMock);
 

@@ -4,7 +4,11 @@
 <script src="/lib/ace/ace.js" type="text/javascript" charset="utf-8"></script>
 <!--<script type="text/javascript" src="http://www.stalk.io/stalk.js" charset="utf-8" ></script>-->
   <h3>Question</h3>
-  <div class="summernote"><%= interviews[0].get('content') %></div>
+  <div class="summernote well"><%= content %></div>
+  <div class="summernote-btn-area">
+    <button class="summernote-edit-btn btn">편집</button>
+    <button class="summernote-save-btn btn">저장</button>
+  </div>
   <h3>Answer</h3>
   <div id="editor">function foo(items) {
   var x = "All this is syntax highlighted";

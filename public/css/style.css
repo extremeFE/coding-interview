@@ -12,3 +12,12 @@ a {
 #container {
   padding-top: 25px;
 }
+.summernote.well {
+  margin-bottom: 0px;
+}
+.summernote-btn-area {
+  margin-top: 5px;
+}
+.summernote-btn-area button {
+  float: right;
+}

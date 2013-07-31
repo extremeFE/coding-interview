@@ -5,7 +5,8 @@ define([
 ], function(_, Backbone) {
   var InterviewModel = Backbone.Model.extend({
     defaults: {
-      content: ""
+      content: "",
+      type:""
     }, url: '/interview'
   });
 
