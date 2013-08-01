@@ -10,7 +10,7 @@ var interviewTemplate = '<h3>실시간 코딩 인터뷰 페이지 생성 완료<
     '<h5>면접관 접속 url</h5>' +
     '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.interviewerKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.interviewerKey %></a></p>' +
     '<h5>지원자 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.interviewerKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.interviewerKey %></a></p>';
+    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.applicantKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.applicantKey %></a></p>';
 
 exports.interview = function(req, res) {
   var id = req.body.id;
