@@ -3,11 +3,13 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'bootstrap',
   'io',
+  'ace',
   'collections/interview',
-  'text!/templates/interview.html'
-], function($, _, Backbone, Bootstrap, io, interviewCollection, interviewTemplate) {
+  'text!/templates/interview.html',
+  'bootstrap',
+  'summernote'
+], function($, _, Backbone, io, ace, interviewCollection, interviewTemplate) {
   var InterviewView = Backbone.View.extend({
     el: $('#container'),
     initialize: function (data) {
@@ -41,6 +43,7 @@ define([
           } else {
             $('.question-btn-area').remove();
           }
+          console.log(ace)
           var editor = ace.edit("editor");
           editor.setTheme("ace/theme/monokai");
           editor.getSession().setMode("ace/mode/javascript");

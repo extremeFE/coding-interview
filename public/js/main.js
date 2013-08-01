@@ -6,8 +6,10 @@ require.config({
     jquery: 'libs/jquery',
     underscore: 'libs/underscore',
     backbone: 'libs/backbone',
+    io: '../socket.io/socket.io',
+    ace: '../lib/ace/ace',
     bootstrap: '../lib/bootstrap/js/bootstrap.min',
-    io: '../socket.io/socket.io'
+    summernote: '../lib/summernote/summernote.min'
   },
   shim: {
     "underscore": {
@@ -18,9 +20,17 @@ require.config({
       deps: ["jquery", "underscore"],
       exports: "Backbone"
     },
+    "ace": {
+      deps: [],
+      exports: "ace"
+    },
     "bootstrap": {
       deps: ["jquery"],
       exports: "Bootstrap"
+    },
+    "summernote": {
+      deps: ["jquery"],
+      exports: "Summernote"
     }
   }
 });
