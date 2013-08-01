@@ -5,9 +5,6 @@
 
 var express = require('express')
   , routes = require('./routes')
-  , user = require('./routes/user')
-  , interview = require('./routes/interview')
-  , question = require('./routes/question')
   , mail = require('./routes/mail')
   , http = require('http')
   , path = require('path');
@@ -33,13 +30,9 @@ if ('development' == app.get('env')) {
   app.use(express.errorHandler());
 }
 
-//app.get('/', routes.index);
-app.post('/interview', interview.interview);
-//app.get('/sendMail', mail.sendMail);
-app.post('/createInterview', interview.create);
-app.post('/saveQuestion', interview.saveQuestion);
-app.get('/users', user.list);
-app.get('/insertMock', question.insertMock);
+app.post('/interview', routes.interview);
+app.post('/createInterview', routes.createInterview);
+app.post('/saveQuestion', routes.saveQuestion);
 
 http.createServer(app).listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
