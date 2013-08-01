@@ -17,18 +17,18 @@ exports.interview = function(req, res) {
   var key = req.body.type;
   model.find({_id:id}, function (err, docs) {
     var type;
-    var hDoc = docs[0];
+    var hData = docs[0];
 
-    if (hDoc.adminKey === key) {
+    if (hData.adminKey === key) {
       type = 'ADMIN';
-    } else if (hDoc.adminKey === key) {
+    } else if (hData.interviewerKey === key) {
       type = 'INTERVIEWER';
     } else {
       type = 'APPLICANT';
     }
     
     if (err) return next(err);
-    res.send({ id: hDoc._id, content: hDoc.content, type: type });
+    res.send({ id: hData._id, content: hData.content, type: type });
   });
 };
 
