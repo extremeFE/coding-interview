@@ -11,6 +11,7 @@
     "less-middleware": "*",
     "mongoose": "*",
     "nodemailer": "*",
-    "underscore": "*"
+    "underscore": "*",
+    "socket.io": "*"
   }
 }

@@ -4,14 +4,24 @@ define([
   'underscore',
   'backbone',
   'bootstrap',
+  'io',
   'collections/interview',
   'text!/templates/interview.html'
-], function($, _, Backbone, Bootstrap, interviewCollection, interviewTemplate) {
+], function($, _, Backbone, Bootstrap, io, interviewCollection, interviewTemplate) {
   var InterviewView = Backbone.View.extend({
     el: $('#container'),
     initialize: function (data) {
       this.queryStirng = data.queryStirng;
+      this.socket = io.connect('http://localhost');
+      this.socket.on('updateQuestion', _.bind(this.updateQuestion, this));
     },
+
+    // ### updateQuestion
+    // > 관리자가 문제를 변경하면 문제영역 내용 변경
+    updateQuestion : function(sHTML) {
+      $('.summernote').html(sHTML);
+    },
+
     render: function() {
       this.collection = new interviewCollection();
       var that = this;
@@ -19,15 +29,17 @@ define([
         type:'POST',
         data: this.queryStirng,
         success: function(interview) {
-          that.model = interview.models[0];
+          var model = interview.models[0];
+          that.id = model.get('id');
+          that.type = model.get('type');
 
-          var type = that.model.get('type');
-          var html = _.template(interviewTemplate, {content: that.model.get('content')});
-          that.$el.html(html);
-          if (type === 'ADMIN') {
-            $('.summernote-save-btn').hide();
+          var sHtml = _.template(interviewTemplate, {content: model.get('content')});
+          that.$el.html(sHtml);
+
+          if (that.type === 'ADMIN') {
+            $('.question-save-btn').hide();
           } else {
-            $('.summernote-btn-area').remove();
+            $('.question-btn-area').remove();
           }
           var editor = ace.edit("editor");
           editor.setTheme("ace/theme/monokai");
@@ -37,34 +49,33 @@ define([
     },
 
     events: {
-      "click .summernote-edit-btn": "editSummernote",
-      "click .summernote-save-btn": "saveSummernote"
+      "click .question-edit-btn": "editQuestion",
+      "click .question-save-btn": "saveQuestion"
     },
 
-    editSummernote : function() {
+    // ### editQuestion
+    // > 문제 편집 모드로 변경
+    editQuestion : function() {
       $('.summernote').summernote({height: 200, focus: true});
-      $('.summernote-edit-btn').hide();
-      $('.summernote-save-btn').show();
+      $('.question-edit-btn').hide();
+      $('.question-save-btn').show();
     },
 
-    saveSummernote : function() {
-      var model = this.model;
+    // ### saveQuestion
+    // > 문제 저장
+    saveQuestion : function() {
+      var that = this;
       var data = {
-        id : model.get('id'),
-        type : model.get('type'),
+        id : that.id,
+        type : that.type,
         content : $('.summernote').code()[0]
       };
 
-      $.ajax({
-        url: '/saveQuestion',
-        type: "POST",
-        data: $.param(data)
-      }).done(function(hResult){
-        console.log(hResult);
-      });
+      this.socket.emit('saveQuestion',data);
+
       $('.summernote').destroy();
-      $('.summernote-save-btn').hide();
-      $('.summernote-edit-btn').show();
+      $('.question-save-btn').hide();
+      $('.question-edit-btn').show();
     }
   });
 

@@ -54,11 +54,11 @@ exports.createInterview = function(req, res) {
   });
 };
 
-exports.saveQuestion = function(req, res) {
-  var id = req.body.id;
+exports.saveQuestion = function(data) {
+  var id = data.id;
 //  var type = req.body.type;
-  var content = req.body.content;
+  var content = data.content;
   model.update({_id:id}, {content:content}, null, function(err){
-    res.send('success');
+//    res.send('success');
   });
 };

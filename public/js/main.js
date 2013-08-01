@@ -6,7 +6,8 @@ require.config({
     jquery: 'libs/jquery',
     underscore: 'libs/underscore',
     backbone: 'libs/backbone',
-    bootstrap: '../lib/bootstrap/js/bootstrap.min'
+    bootstrap: '../lib/bootstrap/js/bootstrap.min',
+    io: '../socket.io/socket.io'
   },
   shim: {
     "underscore": {

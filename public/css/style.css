@@ -17,9 +17,9 @@ a {
   height: 220px;
   overflow-y: auto;
 }
-.summernote-btn-area {
+.question-btn-area {
   margin-top: 5px;
 }
-.summernote-btn-area button {
+.question-btn-area button {
   float: right;
 }

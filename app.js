@@ -4,6 +4,7 @@
  */
 
 var express = require('express')
+  , socketio = require('socket.io')
   , routes = require('./routes')
   , mail = require('./routes/mail')
   , http = require('http')
@@ -32,8 +33,20 @@ if ('development' == app.get('env')) {
 
 app.post('/interview', routes.interview);
 app.post('/createInterview', routes.createInterview);
-app.post('/saveQuestion', routes.saveQuestion);
+//app.post('/saveQuestion', routes.saveQuestion);
 
-http.createServer(app).listen(app.get('port'), function(){
+var server = http.createServer(app);
+var io = socketio.listen(server);
+
+io.sockets.on('connection', function (socket) {
+  socket.on('saveQuestion', function(data){
+    routes.saveQuestion(data);
+    io.sockets.emit('updateQuestion', data.content);
+  });
+});
+
+server.listen(app.get('port'), function(){
   console.log('Express server listening on port ' + app.get('port'));
 });
+
+
