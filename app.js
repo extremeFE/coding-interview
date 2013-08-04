@@ -40,8 +40,15 @@ var io = socketio.listen(server);
 
 io.sockets.on('connection', function (socket) {
   socket.on('saveQuestion', function(data){
-    routes.saveQuestion(data);
-    io.sockets.emit('updateQuestion', data.content);
+    routes.saveQuestion(data, function() {
+      io.sockets.emit('updateQuestion', data.content);
+    });
+  });
+
+  socket.on('saveAnswer', function(data){
+    routes.saveAnswer(data, function(){
+      io.sockets.emit('updateAnswer', data);
+    });
   });
 });
 

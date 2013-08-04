@@ -6,6 +6,7 @@ define([
   var InterviewModel = Backbone.Model.extend({
     defaults: {
       content: "",
+      answer: "",
       type:""
     }, url: '/interview'
   });

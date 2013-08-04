@@ -21,7 +21,6 @@ require.config({
       exports: "Backbone"
     },
     "ace": {
-      deps: [],
       exports: "ace"
     },
     "bootstrap": {

@@ -16,12 +16,21 @@ define([
       this.queryStirng = data.queryStirng;
       this.socket = io.connect('http://localhost');
       this.socket.on('updateQuestion', _.bind(this.updateQuestion, this));
+      this.socket.on('updateAnswer', _.bind(this.updateAnswer, this));
     },
 
     // ### updateQuestion
     // > 관리자가 문제를 변경하면 문제영역 내용 변경
     updateQuestion : function(sHTML) {
       $('.summernote').html(sHTML);
+    },
+
+    updateAnswer : function(data) {
+      if (this.type === 'APPLICANT') {
+        return;
+      }
+      this.aceEditor.setValue(data.answer, -1);
+      this.aceEditor.moveCursorToPosition(data.cursorPos);
     },
 
     render: function() {
@@ -34,8 +43,7 @@ define([
           var model = interview.models[0];
           that.id = model.get('id');
           that.type = model.get('type');
-
-          var sHtml = _.template(interviewTemplate, {content: model.get('content')});
+          var sHtml = _.template(interviewTemplate, {content: model.get('content'), answer: model.get('answer')});
           that.$el.html(sHtml);
 
           if (that.type === 'ADMIN') {
@@ -43,12 +51,28 @@ define([
           } else {
             $('.question-btn-area').remove();
           }
-          console.log(ace)
-          var editor = ace.edit("editor");
-          editor.setTheme("ace/theme/monokai");
-          editor.getSession().setMode("ace/mode/javascript");
+//console.log(ace)
+
+          that.aceEditor = ace.edit("editor");
+          that.aceEditor.setTheme("ace/theme/monokai");
+          that.aceEditor.getSession().setMode("ace/mode/javascript");
+
+          if (that.type === 'APPLICANT') {
+            that.aceEditor.on("change", _.bind(that.changeAnswer, that));
+          }
         }
       });
+    },
+
+    changeAnswer : function(e) {
+      var data = {
+        id : this.id,
+        type : this.type,
+        answer : this.aceEditor.getValue(),
+        cursorPos : this.aceEditor.getCursorPosition()
+      };
+
+      this.socket.emit('saveAnswer',data);
     },
 
     events: {
@@ -67,10 +91,9 @@ define([
     // ### saveQuestion
     // > 문제 저장
     saveQuestion : function() {
-      var that = this;
       var data = {
-        id : that.id,
-        type : that.type,
+        id : this.id,
+        type : this.type,
         content : $('.summernote').code()[0]
       };
 

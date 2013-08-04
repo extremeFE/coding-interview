@@ -28,7 +28,7 @@ exports.interview = function(req, res) {
     }
 
     if (err) return next(err);
-    res.send({ id: hData._id, content: hData.content, type: type });
+    res.send({ id: hData._id, content: hData.content, answer: hData.answer, type: type });
   });
 };
 
@@ -54,11 +54,21 @@ exports.createInterview = function(req, res) {
   });
 };
 
-exports.saveQuestion = function(data) {
+exports.saveQuestion = function(data, callback) {
   var id = data.id;
 //  var type = req.body.type;
   var content = data.content;
   model.update({_id:id}, {content:content}, null, function(err){
+    callback();
 //    res.send('success');
+  });
+};
+
+exports.saveAnswer = function(data, callback) {
+  var id = data.id;
+  var answer = data.answer;
+  console.log('answer', answer);
+  model.update({_id:id}, {answer:answer}, null, function(err){
+    callback();
   });
 };
