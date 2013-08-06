@@ -59,6 +59,8 @@ define([
 
           if (that.type === 'APPLICANT') {
             that.aceEditor.on("change", _.bind(that.changeAnswer, that));
+          } else {
+            that.aceEditor.setReadOnly(true);
           }
         }
       });
