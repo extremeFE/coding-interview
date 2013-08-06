@@ -77,7 +77,9 @@ define([
 
     events: {
       "click .question-edit-btn": "editQuestion",
-      "click .question-save-btn": "saveQuestion"
+      "click .question-save-btn": "saveQuestion",
+      "change #select-lang": "selectLang",
+      "change #select-theme": "selectTheme"
     },
 
     // ### editQuestion
@@ -102,6 +104,18 @@ define([
       $('.summernote').destroy();
       $('.question-save-btn').hide();
       $('.question-edit-btn').show();
+    },
+
+    // ### selectLange
+    // > language 선택
+    selectLang : function(e) {
+      this.aceEditor.getSession().setMode("ace/mode/" + e.target.value);
+    },
+
+    // ### selectTheme
+    // > 테마 선택
+    selectTheme : function(e) {
+      this.aceEditor.setTheme("ace/theme/" + e.target.value);
     }
   });
 

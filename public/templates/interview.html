@@ -1,10 +1,42 @@
-<link rel="stylesheet" type="text/css" href="/lib/summernote/summernote.css" />
-<link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" />
-  <h3>Question</h3>
+  <link rel="stylesheet" type="text/css" href="/lib/summernote/summernote.css" />
+  <link rel="stylesheet" type="text/css" href="//netdna.bootstrapcdn.com/font-awesome/3.1.1/css/font-awesome.min.css" />
   <div class="summernote well"><%= content %></div>
   <div class="question-btn-area">
     <button class="question-edit-btn btn">편집</button>
     <button class="question-save-btn btn">저장</button>
   </div>
-  <h3>Answer</h3>
-  <div id="editor"><%= answer %></div>
+  <div class="well" style="margin-top:10px;">
+    <div class="row-fluid">
+      <div class="span9">
+        <div id="editor"><%= answer %></div>
+      </div>
+      <div class="span3" style="height:400px;background-color:#fff;">
+      </div>
+    </div>
+    <div class="row-fluid" style="margin-top:10px;">
+      <div class="span9">
+        Language :
+        <select id="select-lang">
+          <option value="c_cpp">C, C++</option>
+          <option value="java">Java</option>
+          <option value="javascript" selected>Javascript</option>
+          <option value="python">Python</option>
+          <option value="clojure">Clojure</option>
+        </select>
+        &nbsp;
+        Theme :
+        <select id="select-theme">
+          <option value="monokai" selected>Monokai</option>
+          <option value="eclipse">Eclipse</option>
+          <option value="textmate">Textmate</option>
+          <option value="xcode">X-Code</option>
+          <option value="terminal">Terminal</option>
+          <option value="twilight">Twilight</option>
+        </select>
+      </div>
+      <div class="span3">
+        <span>User1 : </span>
+        <input type="text" style="width:130px;" />
+      </div>
+    </div>
+  </div>
