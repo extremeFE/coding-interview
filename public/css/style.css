@@ -23,3 +23,8 @@ a {
 .question-btn-area button {
   float: right;
 }
+#chat-area {
+  height: 400px;
+  background-color: #fff;
+  overflow-y: auto;
+}

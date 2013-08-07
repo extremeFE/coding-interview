@@ -35,10 +35,25 @@ app.post('/interview', routes.interview);
 app.post('/createInterview', routes.createInterview);
 //app.post('/saveQuestion', routes.saveQuestion);
 
-var server = http.createServer(app);
-var io = socketio.listen(server);
+var server = http.createServer(app),
+    io = socketio.listen(server),
+    usernames = {},
+    typeCounts = {ADMIN:0, INTERVIEWER:0, APPLICANT:0},
+    names = {ADMIN:'관리자', INTERVIEWER:'면접관', APPLICANT:'지원자'};
 
 io.sockets.on('connection', function (socket) {
+  socket.on('addUser', function(data) {
+    var typeCount = typeCounts[data.type] + 1;
+    typeCounts[data.type] = typeCount;
+    var username = names[data.type] + (typeCount===1 ? '' : typeCount);
+    socket.username = username
+    usernames[username] = username;
+  });
+
+  socket.on('sendChat', function(data) {
+    io.sockets.emit('updateChat', {username: socket.username, chat: data.chat});
+  });
+
   socket.on('saveQuestion', function(data){
     routes.saveQuestion(data, function() {
       io.sockets.emit('updateQuestion', data.content);
