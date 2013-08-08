@@ -75,6 +75,8 @@ define([
           } else {
             that.aceEditor.setReadOnly(true);
           }
+
+          that.aceEditor.on("changeSelection", _.bind(that.viewSelectionRange, that));
         }
       });
     },
@@ -92,11 +94,23 @@ define([
       this.socket.emit('saveAnswer',data);
     },
 
+    viewSelectionRange : function(e) {
+      var oSelection = this.aceEditor.getSelection(),
+          start = {row:oSelection.selectionAnchor.row, column:oSelection.selectionAnchor.column},
+          end = {row:oSelection.selectionLead.row, column:oSelection.selectionLead.column};
+
+      this.range = {start:start, end:end};
+      var view = (start.row+1)+':'+start.column+'-'+(end.row+1)+':'+end.column;
+      $('#range-info').html(view);
+    },
+
     events: {
       "click .question-edit-btn": "editQuestion",
       "click .question-save-btn": "saveQuestion",
       "change #select-lang": "selectLang",
       "change #select-theme": "selectTheme",
+      "click #send-range-link": "sendRangeLink",
+      "click #chat-area": "changeSelection",
       "keydown #chat": 'sendChat'
     },
 
@@ -134,6 +148,30 @@ define([
     // > 테마 선택
     selectTheme : function(e) {
       this.aceEditor.setTheme("ace/theme/" + e.target.value);
+    },
+
+    sendRangeLink : function() {
+      if (!this.range) {
+        return;
+      }
+      var start = this.range.start,
+          end = this.range.end,
+          view = (start.row+1)+':'+start.column+'-'+(end.row+1)+':'+end.column,
+          chat = _.template('<span class="range-link" data-start-row="<%=start.row %>" data-start-column="<%=start.column %>" data-end-row="<%=end.row %>" data-end-column="<%=end.column %>"><%=view%></span>',
+          {start: start, end:end, view:view});
+
+      this.socket.emit('sendChat',{chat:chat});
+    },
+
+    changeSelection : function(e) {
+      var wel = $(e.target);
+      if (!wel.hasClass('range-link')) {
+        return;
+      }
+
+      var start = {row:wel.attr('data-start-row'), column:wel.attr('data-start-column')};
+      var end = {row:wel.attr('data-end-row'), column:wel.attr('data-end-column')};
+      console.log(start, end)
     },
 
     // ### sendChat
