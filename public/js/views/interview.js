@@ -77,6 +77,7 @@ define([
           }
 
           that.aceEditor.on("changeSelection", _.bind(that.viewSelectionRange, that));
+          that.aceRange = ace.require("./range").Range;
         }
       });
     },
@@ -94,14 +95,11 @@ define([
       this.socket.emit('saveAnswer',data);
     },
 
+    // ### viewSelectionRange
+    // range 정보 표시하기
     viewSelectionRange : function(e) {
-      var oSelection = this.aceEditor.getSelection(),
-          start = {row:oSelection.selectionAnchor.row, column:oSelection.selectionAnchor.column},
-          end = {row:oSelection.selectionLead.row, column:oSelection.selectionLead.column};
-
-      this.range = {start:start, end:end};
-      var view = (start.row+1)+':'+start.column+'-'+(end.row+1)+':'+end.column;
-      $('#range-info').html(view);
+      var range = this.range = this.aceEditor.getSelectionRange();
+      $('#range-info').html((range.start.row+1)+':'+range.start.column+'-'+(range.end.row+1)+':'+range.end.column);
     },
 
     events: {
@@ -110,7 +108,7 @@ define([
       "change #select-lang": "selectLang",
       "change #select-theme": "selectTheme",
       "click #send-range-link": "sendRangeLink",
-      "click #chat-area": "changeSelection",
+      "click #chat-area": "selectRangeLink",
       "keydown #chat": 'sendChat'
     },
 
@@ -150,6 +148,8 @@ define([
       this.aceEditor.setTheme("ace/theme/" + e.target.value);
     },
 
+    // ### sendRangeLink
+    // > range 링크 정보 전송
     sendRangeLink : function() {
       if (!this.range) {
         return;
@@ -163,15 +163,17 @@ define([
       this.socket.emit('sendChat',{chat:chat});
     },
 
-    changeSelection : function(e) {
+    // ### selectRangeLink
+    // range link 정보로 selection 변경하기
+    selectRangeLink : function(e) {
       var wel = $(e.target);
       if (!wel.hasClass('range-link')) {
         return;
       }
 
-      var start = {row:wel.attr('data-start-row'), column:wel.attr('data-start-column')};
-      var end = {row:wel.attr('data-end-row'), column:wel.attr('data-end-column')};
-      console.log(start, end)
+      var range = new this.aceRange(parseInt(wel.attr('data-start-row')), parseInt(wel.attr('data-start-column')),
+                          parseInt(wel.attr('data-end-row')), parseInt(wel.attr('data-end-column')));
+      this.aceEditor.getSelection().setSelectionRange(range);
     },
 
     // ### sendChat
