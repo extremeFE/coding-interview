@@ -1,3 +1,5 @@
+@import "elements.less";
+
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -29,10 +31,61 @@ a {
   }
 }
 
-#chat-area {
-  height:400px;
+#chat-layer {
+  .box-sizing();
+  position:fixed;
+  right:10px;
+  bottom:10px;
+  height:360px;
+  width:250px;
+  border:1px solid #555;
   background-color:#fff;
-  overflow-y:auto;
+  #chat-bar {
+    width:100%;
+    background-color: #eeefd3;
+    height:30px;
+    position:relative;
+    .chat-user-list {
+      .box-sizing();
+      padding-left:5px;
+      width:230px;
+      height:30px;
+      line-height:29px;
+    }
+
+    >i {
+      cursor:pointer;
+      position:absolute;
+      right:5px;
+      top:8px;
+    }
+
+    &.blink {
+      background-color: #c8dff9;
+    }
+  }
+
+  #chat-area {
+    .box-sizing();
+    height:295px;
+    width:248px;
+    padding:5px;
+    background-color:#fff;
+    overflow-y:auto;
+  }
+
+  #chat {
+    margin-left:5px;
+    width:225px;
+  }
+
+  &.collapsed {
+    cursor:pointer;
+    height:32px;
+    #chat-area, #chat, i {
+      display:none;
+    }
+  }
 }
 
 select {

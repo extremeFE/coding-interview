@@ -1,3 +1,9 @@
+/*---------------------------------------------------
+    LESS Elements 0.9
+  ---------------------------------------------------
+    A set of useful LESS mixins
+    More info at: http://lesselements.com
+  ---------------------------------------------------*/
 body {
   padding: 50px;
   font: 14px "Lucida Grande", Helvetica, Arial, sans-serif;
@@ -23,10 +29,67 @@ a {
 .question-btn-area button {
   float: right;
 }
-#chat-area {
-  height: 400px;
+#chat-layer {
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  position: fixed;
+  right: 10px;
+  bottom: 10px;
+  height: 360px;
+  width: 250px;
+  border: 1px solid #555;
+  background-color: #fff;
+}
+#chat-layer #chat-bar {
+  width: 100%;
+  background-color: #eeefd3;
+  height: 30px;
+  position: relative;
+}
+#chat-layer #chat-bar .chat-user-list {
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  padding-left: 5px;
+  width: 230px;
+  height: 30px;
+  line-height: 29px;
+}
+#chat-layer #chat-bar > i {
+  cursor: pointer;
+  position: absolute;
+  right: 5px;
+  top: 8px;
+}
+#chat-layer #chat-bar.blink {
+  background-color: #c8dff9;
+}
+#chat-layer #chat-area {
+  -ms-box-sizing: border-box;
+  -moz-box-sizing: border-box;
+  -webkit-box-sizing: border-box;
+  box-sizing: border-box;
+  height: 295px;
+  width: 248px;
+  padding: 5px;
   background-color: #fff;
   overflow-y: auto;
+}
+#chat-layer #chat {
+  margin-left: 5px;
+  width: 225px;
+}
+#chat-layer.collapsed {
+  cursor: pointer;
+  height: 32px;
+}
+#chat-layer.collapsed #chat-area,
+#chat-layer.collapsed #chat,
+#chat-layer.collapsed i {
+  display: none;
 }
 select {
   width: 150px;

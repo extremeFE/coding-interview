@@ -41,7 +41,14 @@ define([
     updateChat : function(data) {
       var welNew = $('<div><b>'+data.username + ':</b> ' + data.chat + '</div>');
       $('#chat-area').append(welNew);
-      welNew[0].scrollIntoView();
+
+      if ($('#chat-layer').hasClass('collapsed')) {
+        this.chatBarBlink = setInterval(function() {
+          $('#chat-bar').toggleClass('blink');
+        }, 1000);
+      } else {
+        welNew[0].scrollIntoView();
+      }
     },
 
     render: function() {
@@ -108,6 +115,8 @@ define([
       "change #select-lang": "selectLang",
       "change #select-theme": "selectTheme",
       "click #send-range-link": "sendRangeLink",
+      "click #chat-collapse": "collapseChat",
+      "click #chat-bar": "expandChat",
       "click #chat-area": "selectRangeLink",
       "keydown #chat": 'sendChat'
     },
@@ -115,7 +124,7 @@ define([
     // ### editQuestion
     // > 문제 편집 모드로 변경
     editQuestion : function() {
-      $('.summernote').summernote({height: 200, focus: true});
+      $('.summernote').summernote({height: 132, focus: true});
       $('.question-edit-btn').hide();
       $('.question-save-btn').show();
     },
@@ -146,6 +155,19 @@ define([
     // > 테마 선택
     selectTheme : function(e) {
       this.aceEditor.setTheme("ace/theme/" + e.target.value);
+    },
+
+    collapseChat : function() {
+      $('#chat-layer').addClass('collapsed');
+    },
+
+    expandChat : function(e) {
+      if (e.target.id !== 'chat-collapse' && $('#chat-layer').hasClass('collapsed')) {
+        $('#chat-layer').removeClass('collapsed');
+        clearInterval(this.chatBarBlink);
+        $('#chat-bar').removeClass('blink');
+        $('#chat').focus();
+      }
     },
 
     // ### sendRangeLink
