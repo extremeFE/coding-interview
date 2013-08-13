@@ -18,13 +18,14 @@ Realtime Coding Interview
 
 
 # 실행방법
-```
+
+```bash
 nodemon app.js
 ```
 
 # 비고
 
-* MongoDB와 Gmail의 비밀번호를 공지된 비밀번호로 설정하고 실행해야 함
+* MongoDB와 Gmail의 비밀번호를 공지된 비밀번호로 설정하고 실행
     * MongoDB : routes/interviewModel.js
     * Gamil : routes/mail.js
 
