@@ -11,8 +11,22 @@
         <div id="editor"><%= answer %></div>
       </div>
       <div id="memo-area" class="span3">
-        <div class="memo-layer">
-          <div class="memo-content">메모 입니다.</div>
+        <div id="memo-layer-area">
+          <div class="memo-layer">
+            <div class="memo-icon select"><span>2</span></div>
+            <div class="memo-content-list">
+              <div class="memo-content">aaa</div>
+              <div class="memo-content">bbb</div>
+            </div>
+          </div>
+
+          <div class="memo-layer" style="top:50px;">
+            <div class="memo-icon add"><span>+</span></div>
+          </div>
+
+          <div class="memo-layer" style="top:70px;">
+            <div class="memo-icon select add"><span>+</span></div>
+          </div>
         </div>
       </div>
     </div>
@@ -36,9 +50,8 @@
         </select>
       </div>
       <div class="span3">
-        <span id="range-info" style="display:inline-block;width:90px;margin-right:5px;text-align:right;"></span>
-        <button id="memo-btn" class="btn btn-success btn-small">Memo</button>
-        <button id="send-range-link" class="btn btn-info btn-small">Chat</button>
+        <span id="range-info" style="display:inline-block;width:150px;margin-right:5px;text-align:right;"></span>
+        <button id="send-range-link-btn" class="btn btn-info btn-small">Chat</button>
       </div>
       <div class="span3">
 

@@ -32,36 +32,105 @@ a {
 }
 
 #memo-area {
+  width:229px;
   height:400px;
+  margin-left:0px;
   overflow-y:auto;
   position:relative;
-  .memo-layer{
-    .box-sizing();
-    left:20px;
+  #memo-layer-area {
     position:absolute;
-    width:190px;
-    padding:3px;
-    background-color:#888;
-    .memo-content {
+    top:0px;
+    left:0px;
+    .memo-layer {
       .box-sizing();
-      background-color: #fff;
-      padding:5px;
-    }
-    &:before {
+      width:200px;
       position:absolute;
-      border-color: #888 #888 transparent transparent;
-      border-style:solid;
-      border-width:10px;
-      width:0;
-      height:0;
-      top:-5px;
-      left:-20px;
-      content:' ';
+      left:5px;
+      top:0px;
+      .memo-icon {
+        position:absolute;
+        width:13px;
+        height:13px;
+        background-color:transparent;
+        color:#fff;
+        text-align:center;
+        font-size:10px;
+        .rounded(4px);
+        span {
+          display:none;
+        }
+
+        &:after {
+          position:absolute;
+          border-color: transparent;
+          border-style:solid;
+          border-width:3px;
+          width:0;
+          height:0;
+          top:11px;
+          left:3px;
+          content:' ';
+        }
+
+        &.select.add {
+          background-color:#ccc;
+        }
+
+        &.select.add:after {
+          border-color: #ccc transparent transparent #ccc;
+        }
+
+        &.select, &:hover, &.add:hover {
+          background-color : #0000ed;
+          cursor:pointer;
+          span {
+            display:inline;
+          }
+        }
+
+        &.select:after, &:hover:after, &.add:hover:after {
+          cursor:pointer;
+          border-color: #0000ed transparent transparent #0000ed;
+        }
+
+      }
+
+      .memo-content-list {
+        width:180px;
+        position:absolute;
+        left:40px;
+        top:5px;
+        background-color: #888;
+        .box-sizing();
+
+        .memo-content {
+          width:170px;
+          .box-sizing();
+          background-color: #fff;
+          padding:5px;
+          margin:5px;
+        }
+
+        &:before {
+          position:absolute;
+          border-color: #888 #888 transparent transparent;
+          border-style:solid;
+          border-width:10px;
+          width:0;
+          height:0;
+          top:0;
+          left:-20px;
+          content:' ';
+        }
+      }
+
     }
   }
 }
 
+
 #chat-layer {
+  z-index:1;
   .box-sizing();
   position:fixed;
   right:10px;
