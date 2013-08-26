@@ -7,6 +7,7 @@ define([
     defaults: {
       content: "",
       answer: "",
+      memo: [],
       type:""
     }, url: '/interview'
   });

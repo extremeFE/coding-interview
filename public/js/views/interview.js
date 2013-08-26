@@ -61,6 +61,7 @@ define([
           var model = interview.models[0];
           that.id = model.get('id');
           that.type = model.get('type');
+          that.memo = model.get('memo');
 
           that.socket.emit('addUser',{type:that.type});
 
@@ -85,8 +86,23 @@ define([
 
           that.aceEditor.on("changeSelection", _.bind(that.viewSelectionRange, that));
           that.aceRange = ace.require("./range").Range;
+
+          setTimeout(function() {
+            that.memo.length = that.aceEditor.getLastVisibleRow() + 1;
+            that.renderMemo(that.memo);
+          }, 100);
         }
       });
+    },
+
+    renderMemo : function(aMemo){
+      var sAddHtml = '<div id="memo-layer-<%= i %>" class="memo-layer" style="top:<%= top %>px"> <div class="memo-icon add"><span>+</span></div> </div>';
+      var sHtml = "";
+      for (var i=0; i < aMemo.length; i++) {
+        var memo = aMemo[i];
+        sHtml += _.template(sAddHtml, {i:i, top:i*16})
+      }
+      $('#memo-layer-area').html(sHtml);
     },
 
     // ### changeAnswer
@@ -105,7 +121,12 @@ define([
     // ### viewSelectionRange
     // range 정보 표시하기
     viewSelectionRange : function(e) {
+      if (this.selectedLine !== undefined) {
+        $('#memo-layer-'+this.selectedLine).removeClass('select');
+      }
       var range = this.range = this.aceEditor.getSelectionRange();
+      this.selectedLine = range.start.row;
+      $('#memo-layer-'+range.start.row).addClass('select');
       $('#range-info').html((range.start.row+1)+':'+range.start.column+'-'+(range.end.row+1)+':'+range.end.column);
     },
 

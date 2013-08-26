@@ -77,24 +77,32 @@ a {
   left: 3px;
   content: ' ';
 }
-#memo-area #memo-layer-area .memo-layer .memo-icon.select.add {
+#memo-area #memo-layer-area .memo-layer.select .memo-icon {
+  background-color: #0000ed;
+  cursor: pointer;
+}
+#memo-area #memo-layer-area .memo-layer.select .memo-icon span {
+  display: inline;
+}
+#memo-area #memo-layer-area .memo-layer.select .memo-icon.add {
   background-color: #ccc;
 }
-#memo-area #memo-layer-area .memo-layer .memo-icon.select.add:after {
+#memo-area #memo-layer-area .memo-layer.select .memo-icon.add:after {
   border-color: #ccc transparent transparent #ccc;
 }
-#memo-area #memo-layer-area .memo-layer .memo-icon.select,
+#memo-area #memo-layer-area .memo-layer.select .memo-icon:after {
+  cursor: pointer;
+  border-color: #0000ed transparent transparent #0000ed;
+}
 #memo-area #memo-layer-area .memo-layer .memo-icon:hover,
 #memo-area #memo-layer-area .memo-layer .memo-icon.add:hover {
   background-color: #0000ed;
   cursor: pointer;
 }
-#memo-area #memo-layer-area .memo-layer .memo-icon.select span,
 #memo-area #memo-layer-area .memo-layer .memo-icon:hover span,
 #memo-area #memo-layer-area .memo-layer .memo-icon.add:hover span {
   display: inline;
 }
-#memo-area #memo-layer-area .memo-layer .memo-icon.select:after,
 #memo-area #memo-layer-area .memo-layer .memo-icon:hover:after,
 #memo-area #memo-layer-area .memo-layer .memo-icon.add:hover:after {
   cursor: pointer;

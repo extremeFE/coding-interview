@@ -71,16 +71,30 @@ a {
           left:3px;
           content:' ';
         }
+      }
 
-        &.select.add {
+      &.select .memo-icon{
+        background-color : #0000ed;
+        cursor:pointer;
+        span {
+          display:inline;
+        }
+        &.add {
           background-color:#ccc;
         }
 
-        &.select.add:after {
+        &.add:after {
           border-color: #ccc transparent transparent #ccc;
         }
 
-        &.select, &:hover, &.add:hover {
+        &:after{
+          cursor:pointer;
+          border-color: #0000ed transparent transparent #0000ed;
+        }
+      }
+
+      .memo-icon {
+        &:hover, &.add:hover {
           background-color : #0000ed;
           cursor:pointer;
           span {
@@ -88,11 +102,10 @@ a {
           }
         }
 
-        &.select:after, &:hover:after, &.add:hover:after {
+        &:hover:after, &.add:hover:after {
           cursor:pointer;
           border-color: #0000ed transparent transparent #0000ed;
         }
-
       }
 
       .memo-content-list {
