@@ -55,57 +55,62 @@ a {
   position: absolute;
   width: 13px;
   height: 13px;
-  background-color: transparent;
+  background-color: #ccc;
   color: #fff;
   text-align: center;
   font-size: 10px;
-  -webkit-border-radius: 4px;
-  -moz-border-radius: 4px;
-  border-radius: 4px;
-}
-#memo-area #memo-layer-area .memo-layer .memo-icon span {
-  display: none;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  cursor: pointer;
 }
 #memo-area #memo-layer-area .memo-layer .memo-icon:after {
   position: absolute;
-  border-color: transparent;
+  border-color: #ccc transparent transparent #ccc;
   border-style: solid;
   border-width: 3px;
+  cursor: pointer;
   width: 0;
   height: 0;
   top: 11px;
   left: 3px;
   content: ' ';
 }
+#memo-area #memo-layer-area .memo-layer[data-count^="0"] .memo-icon {
+  background-color: transparent;
+}
+#memo-area #memo-layer-area .memo-layer[data-count^="0"] .memo-icon span {
+  display: none;
+}
+#memo-area #memo-layer-area .memo-layer[data-count^="0"] .memo-icon:after {
+  cursor: default;
+  border-color: transparent;
+}
 #memo-area #memo-layer-area .memo-layer.select .memo-icon {
-  background-color: #0000ed;
-  cursor: pointer;
+  background-color: #ccc;
 }
 #memo-area #memo-layer-area .memo-layer.select .memo-icon span {
   display: inline;
 }
-#memo-area #memo-layer-area .memo-layer.select .memo-icon.add {
-  background-color: #ccc;
-}
-#memo-area #memo-layer-area .memo-layer.select .memo-icon.add:after {
+#memo-area #memo-layer-area .memo-layer.select .memo-icon:after {
   border-color: #ccc transparent transparent #ccc;
 }
-#memo-area #memo-layer-area .memo-layer.select .memo-icon:after {
-  cursor: pointer;
-  border-color: #0000ed transparent transparent #0000ed;
-}
-#memo-area #memo-layer-area .memo-layer .memo-icon:hover,
-#memo-area #memo-layer-area .memo-layer .memo-icon.add:hover {
+#memo-area #memo-layer-area .memo-layer.select.expand .memo-icon {
   background-color: #0000ed;
-  cursor: pointer;
 }
-#memo-area #memo-layer-area .memo-layer .memo-icon:hover span,
-#memo-area #memo-layer-area .memo-layer .memo-icon.add:hover span {
+#memo-area #memo-layer-area .memo-layer.select.expand .memo-icon span {
   display: inline;
 }
-#memo-area #memo-layer-area .memo-layer .memo-icon:hover:after,
-#memo-area #memo-layer-area .memo-layer .memo-icon.add:hover:after {
-  cursor: pointer;
+#memo-area #memo-layer-area .memo-layer.select.expand .memo-icon:after {
+  border-color: #0000ed transparent transparent #0000ed;
+}
+#memo-area #memo-layer-area .memo-layer .memo-icon:hover {
+  background-color: #0000ed;
+}
+#memo-area #memo-layer-area .memo-layer .memo-icon:hover span {
+  display: inline;
+}
+#memo-area #memo-layer-area .memo-layer .memo-icon:hover:after {
   border-color: #0000ed transparent transparent #0000ed;
 }
 #memo-area #memo-layer-area .memo-layer .memo-content-list {
@@ -114,6 +119,7 @@ a {
   left: 40px;
   top: 5px;
   background-color: #888;
+  display: none;
   -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
@@ -129,6 +135,12 @@ a {
   padding: 5px;
   margin: 5px;
 }
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add {
+  width: 155px;
+  height: 40px;
+  display: none;
+  margin: 5px;
+}
 #memo-area #memo-layer-area .memo-layer .memo-content-list:before {
   position: absolute;
   border-color: #888 #888 transparent transparent;
@@ -139,6 +151,12 @@ a {
   top: 0;
   left: -20px;
   content: ' ';
+  display: none;
+}
+#memo-area #memo-layer-area .memo-layer.insert .memo-add,
+#memo-area #memo-layer-area .memo-layer.select.expand .memo-content-list,
+#memo-area #memo-layer-area .memo-layer.select .memo-content-list:before {
+  display: block;
 }
 #chat-layer {
   z-index: 1;

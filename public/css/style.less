@@ -51,20 +51,19 @@ a {
         position:absolute;
         width:13px;
         height:13px;
-        background-color:transparent;
+        background-color:#ccc;
         color:#fff;
         text-align:center;
         font-size:10px;
-        .rounded(4px);
-        span {
-          display:none;
-        }
+        .rounded(3px);
+        cursor:pointer;
 
         &:after {
           position:absolute;
-          border-color: transparent;
+          border-color: #ccc transparent transparent #ccc;
           border-style:solid;
           border-width:3px;
+          cursor:pointer;
           width:0;
           height:0;
           top:11px;
@@ -73,37 +72,51 @@ a {
         }
       }
 
-      &.select .memo-icon{
-        background-color : #0000ed;
-        cursor:pointer;
+      &[data-count^="0"] .memo-icon {
+        background-color : transparent;
         span {
-          display:inline;
-        }
-        &.add {
-          background-color:#ccc;
-        }
-
-        &.add:after {
-          border-color: #ccc transparent transparent #ccc;
+          display:none;
         }
 
         &:after{
-          cursor:pointer;
+          cursor:default;
+          border-color: transparent;
+        }
+      }
+
+      &.select .memo-icon {
+        background-color : #ccc;
+
+        span {
+          display:inline;
+        }
+
+        &:after{
+          border-color: #ccc transparent transparent #ccc;
+        }
+      }
+
+      &.select.expand .memo-icon{
+        background-color : #0000ed;
+
+        span {
+          display:inline;
+        }
+
+        &:after{
           border-color: #0000ed transparent transparent #0000ed;
         }
       }
 
       .memo-icon {
-        &:hover, &.add:hover {
+        &:hover, {
           background-color : #0000ed;
-          cursor:pointer;
           span {
             display:inline;
           }
         }
 
-        &:hover:after, &.add:hover:after {
-          cursor:pointer;
+        &:hover:after {
           border-color: #0000ed transparent transparent #0000ed;
         }
       }
@@ -114,6 +127,7 @@ a {
         left:40px;
         top:5px;
         background-color: #888;
+        display:none;
         .box-sizing();
 
         .memo-content {
@@ -121,6 +135,13 @@ a {
           .box-sizing();
           background-color: #fff;
           padding:5px;
+          margin:5px;
+        }
+
+        .memo-add {
+          width:155px;
+          height:40px;
+          display:none;
           margin:5px;
         }
 
@@ -134,9 +155,13 @@ a {
           top:0;
           left:-20px;
           content:' ';
+          display:none;
         }
       }
 
+      &.insert .memo-add, &.select.expand .memo-content-list, &.select .memo-content-list:before {
+        display:block;
+      }
     }
   }
 }

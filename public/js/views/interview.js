@@ -7,9 +7,11 @@ define([
   'ace',
   'collections/interview',
   'text!/templates/interview.html',
+  'text!/templates/memo.html',
   'bootstrap',
   'summernote'
-], function($, _, Backbone, io, ace, interviewCollection, interviewTemplate) {
+], function($, _, Backbone, io, ace, interviewCollection, interviewTemplate, memoTemplate) {
+  var addMemoTemplate = '<textarea class="memo-add"></textarea>';
   var InterviewView = Backbone.View.extend({
     el: $('#container'),
     initialize: function (data) {
@@ -96,11 +98,18 @@ define([
     },
 
     renderMemo : function(aMemo){
-      var sAddHtml = '<div id="memo-layer-<%= i %>" class="memo-layer" style="top:<%= top %>px"> <div class="memo-icon add"><span>+</span></div> </div>';
       var sHtml = "";
       for (var i=0; i < aMemo.length; i++) {
         var memo = aMemo[i];
-        sHtml += _.template(sAddHtml, {i:i, top:i*16})
+        var sMemoList = '';
+        var view = '+';
+        var addClass = 'insert';
+        if (memo) {
+          view = memo.count;
+          add = '';
+        }
+        sMemoList += addMemoTemplate;
+        sHtml += _.template(memoTemplate, {row:i, count:0, top:i*16, addClass:addClass, view:view, list:sMemoList})
       }
       $('#memo-layer-area').html(sHtml);
     },
@@ -121,11 +130,13 @@ define([
     // ### viewSelectionRange
     // range 정보 표시하기
     viewSelectionRange : function(e) {
-      if (this.selectedLine !== undefined) {
-        $('#memo-layer-'+this.selectedLine).removeClass('select');
+      if (this.selectedRow !== undefined) {
+        var prevLayer = $('#memo-layer-'+this.selectedRow);
+        prevLayer.removeClass('select');
+//        prevLayer.removeClass('expand');
       }
       var range = this.range = this.aceEditor.getSelectionRange();
-      this.selectedLine = range.start.row;
+      this.selectedRow = range.start.row;
       $('#memo-layer-'+range.start.row).addClass('select');
       $('#range-info').html((range.start.row+1)+':'+range.start.column+'-'+(range.end.row+1)+':'+range.end.column);
     },
@@ -139,7 +150,8 @@ define([
       "click #chat-collapse": "collapseChat",
       "click #chat-bar": "expandChat",
       "click #chat-area": "selectRangeLink",
-      "keydown #chat": 'sendChat'
+      "keydown #chat": 'sendChat',
+      "click #memo-area": "clickMemoArea"
     },
 
     // ### editQuestion
@@ -229,6 +241,23 @@ define([
 
       this.socket.emit('sendChat',{chat:value});
       $('#chat').val('');
+    },
+
+    clickMemoArea : function(e) {
+      var welLayer = $(e.target).parents(".memo-layer");
+      if (!welLayer) {
+        return;
+      }
+
+      var welIcon = $(e.target).parents(".memo-icon");
+      if (welIcon.length > 0) {
+        var row = parseInt(welLayer.attr('data-row'));
+        var range = new this.aceRange(row, 0, row, 0);
+        var selection = this.aceEditor.getSelection();
+        selection.setSelectionRange(range);
+        selection.selectLine();
+        welLayer.toggleClass('expand');
+      }
     }
   });
 
