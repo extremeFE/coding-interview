@@ -122,41 +122,60 @@ a {
       }
 
       .memo-content-list {
-        width:180px;
+        width:200px;
         position:absolute;
-        left:40px;
-        top:5px;
+        left:20px;
+        top:0px;
         background-color: #888;
         display:none;
         .box-sizing();
-
+        .rounded(3px);
+        padding-bottom:5px;
         .memo-content {
-          width:170px;
+          width:190px;
           .box-sizing();
-          background-color: #fff;
+          background-color: #eee;
           padding:5px;
-          margin:5px;
+          margin:5px 5px 0px 5px;
+          .rounded(3px);
         }
 
         .memo-add {
-          width:155px;
-          height:40px;
+          width:190px;
           display:none;
-          margin:5px;
+          margin:5px 5px 0px 5px;
+          textarea {
+            width:175px;
+            height:40px;
+            margin-bottom:0px;
+          }
         }
 
-        &:before {
-          position:absolute;
-          border-color: #888 #888 transparent transparent;
-          border-style:solid;
-          border-width:10px;
-          width:0;
-          height:0;
-          top:0;
-          left:-20px;
-          content:' ';
-          display:none;
+        i {
+          cursor:pointer;
+          margin-top:2px;
+          float:right;
         }
+
+        .memo-edit-btn-area {
+          width:100%;
+          height:15px;
+
+          .memo-remove-btn {
+            margin-right:5px;
+          }
+        }
+
+        .memo-add-btn-area {
+          width:100%;
+          i {
+            margin-right:5px;
+            color:#fff;
+          }
+        }
+      }
+      &.insert .memo-add-btn {
+        display:none;
       }
 
       &.insert .memo-add, &.select.expand .memo-content-list, &.select .memo-content-list:before {

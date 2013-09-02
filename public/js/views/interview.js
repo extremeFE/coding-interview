@@ -11,7 +11,7 @@ define([
   'bootstrap',
   'summernote'
 ], function($, _, Backbone, io, ace, interviewCollection, interviewTemplate, memoTemplate) {
-  var addMemoTemplate = '<textarea class="memo-add"></textarea>';
+  var addMemoTemplate = '<div class="memo-add"><textarea></textarea><div class="memo-add-btn-area"><i class="memo-cancel icon-ban-circle" title="취소"></i><i class="memo-save icon-save" title="저장"></i></div></div>';
   var InterviewView = Backbone.View.extend({
     el: $('#container'),
     initialize: function (data) {
@@ -20,6 +20,7 @@ define([
       this.socket.on('updateQuestion', _.bind(this.updateQuestion, this));
       this.socket.on('updateAnswer', _.bind(this.updateAnswer, this));
       this.socket.on('updateChat', _.bind(this.updateChat, this));
+      this.socket.on('updateMemo', _.bind(this.updateMemo, this));
     },
 
     // ### updateQuestion
@@ -53,6 +54,17 @@ define([
       }
     },
 
+    updateMemo : function(data) {
+      if (data.updateType === 'insert') {
+        var welLayer = $('#memo-layer-'+data.row);
+        var html = this.getMemoLayerHtml(data.memo, data.row);
+        var welTmp = $(html);
+        welLayer.html(welTmp[0].innerHTML);
+        welLayer.attr('data-count', welTmp.attr('data-count'));
+        welLayer.removeClass('insert');
+      }
+    },
+
     render: function() {
       this.collection = new interviewCollection();
       var that = this;
@@ -68,6 +80,7 @@ define([
           that.socket.emit('addUser',{type:that.type});
 
           var sHtml = _.template(interviewTemplate, {content: model.get('content'), answer: model.get('answer')});
+          var sHtml = _.template(interviewTemplate, {content: model.get('content'), answer: model.get('answer'), type:names[that.type]});
           that.$el.html(sHtml);
 
           if (that.type === 'ADMIN') {
@@ -97,20 +110,27 @@ define([
       });
     },
 
-    renderMemo : function(aMemo){
-      var sHtml = "";
-      for (var i=0; i < aMemo.length; i++) {
-        var memo = aMemo[i];
-        var sMemoList = '';
-        var view = '+';
-        var addClass = 'insert';
-        if (memo) {
-          view = memo.count;
-          add = '';
-        }
-        sMemoList += addMemoTemplate;
-        sHtml += _.template(memoTemplate, {row:i, count:0, top:i*16, addClass:addClass, view:view, list:sMemoList})
+    getMemoLayerHtml : function(memo, row) {
+      var sMemoList = '';
+      var view = '+';
+      var count = 0;
+      var addClass = 'insert';
+      if (memo) {
+        view = count = memo.length;
+        addClass = 'expand';
+        sMemoList += _.map(memo, function(memoData) {
+          return '<div class="memo-content">'+memoData.memo+'<div class="memo-edit-btn-area"><i class="memo-edit-btn icon-remove-sign" title="삭제"></i><i class="memo-remove-btn icon-edit" title="수정"></i></div></div>';
+        }).join('');
+        sMemoList += '<div class="memo-add-btn-area"><i class="memo-add-btn icon-plus-sign-alt" title="메모 추가"></i></div>';
       }
+      sMemoList += addMemoTemplate;
+      return _.template(memoTemplate, {row:row, count:count, top:row*16, addClass:addClass, view:view, list:sMemoList});
+    },
+
+    renderMemo : function(aMemo){
+      var sHtml = _.map(aMemo, function(memo, i) {
+        return this.getMemoLayerHtml(memo, i);
+      }, this);
       $('#memo-layer-area').html(sHtml);
     },
 
@@ -146,7 +166,7 @@ define([
       "click .question-save-btn": "saveQuestion",
       "change #select-lang": "selectLang",
       "change #select-theme": "selectTheme",
-      "click #send-range-link": "sendRangeLink",
+      "click #send-range-link-btn": "sendRangeLink",
       "click #chat-collapse": "collapseChat",
       "click #chat-bar": "expandChat",
       "click #chat-area": "selectRangeLink",
@@ -248,15 +268,41 @@ define([
       if (!welLayer) {
         return;
       }
-
-      var welIcon = $(e.target).parents(".memo-icon");
+      var welTarget = $(e.target);
+      var welIcon = welTarget.parents(".memo-icon");
+      var memoCount = parseInt(welLayer.attr('data-count'));
+      var row = parseInt(welLayer.attr('data-row'));
       if (welIcon.length > 0) {
-        var row = parseInt(welLayer.attr('data-row'));
         var range = new this.aceRange(row, 0, row, 0);
         var selection = this.aceEditor.getSelection();
         selection.setSelectionRange(range);
         selection.selectLine();
-        welLayer.toggleClass('expand');
+        if (memoCount === 0) {
+          welLayer.toggleClass('expand');
+        }
+      } else if (welTarget.hasClass('memo-add-btn')) {
+        welLayer.addClass('insert');
+      } else if (welTarget.hasClass('memo-save')) {
+        var id = this.id;
+        var memoData = {
+          id:id,
+          row:row,
+          updateType:'insert',
+          memoData: {
+            memoId:'test',
+            memo:welLayer.find('textarea')[0].value,
+            userId:'test',
+            date:'2013-09-02'
+          }
+        }
+        this.socket.emit('sendMemo',memoData);
+      } else if (welTarget.hasClass('memo-cancel')) {
+        if (memoCount === 0) {
+          welLayer.removeClass('expand');
+        } else {
+          welLayer.removeClass('insert');
+        }
+        welLayer.find('textarea').val('');
       }
     }
   });

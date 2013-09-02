@@ -114,43 +114,64 @@ a {
   border-color: #0000ed transparent transparent #0000ed;
 }
 #memo-area #memo-layer-area .memo-layer .memo-content-list {
-  width: 180px;
+  width: 200px;
   position: absolute;
-  left: 40px;
-  top: 5px;
+  left: 20px;
+  top: 0px;
   background-color: #888;
   display: none;
   -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  padding-bottom: 5px;
 }
 #memo-area #memo-layer-area .memo-layer .memo-content-list .memo-content {
-  width: 170px;
+  width: 190px;
   -ms-box-sizing: border-box;
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  background-color: #fff;
+  background-color: #eee;
   padding: 5px;
-  margin: 5px;
+  margin: 5px 5px 0px 5px;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 #memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add {
-  width: 155px;
-  height: 40px;
+  width: 190px;
   display: none;
-  margin: 5px;
+  margin: 5px 5px 0px 5px;
 }
-#memo-area #memo-layer-area .memo-layer .memo-content-list:before {
-  position: absolute;
-  border-color: #888 #888 transparent transparent;
-  border-style: solid;
-  border-width: 10px;
-  width: 0;
-  height: 0;
-  top: 0;
-  left: -20px;
-  content: ' ';
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add textarea {
+  width: 175px;
+  height: 40px;
+  margin-bottom: 0px;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list i {
+  cursor: pointer;
+  margin-top: 2px;
+  float: right;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-edit-btn-area {
+  width: 100%;
+  height: 15px;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-edit-btn-area .memo-remove-btn {
+  margin-right: 5px;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add-btn-area {
+  width: 100%;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add-btn-area i {
+  margin-right: 5px;
+  color: #fff;
+}
+#memo-area #memo-layer-area .memo-layer.insert .memo-add-btn {
   display: none;
 }
 #memo-area #memo-layer-area .memo-layer.insert .memo-add,

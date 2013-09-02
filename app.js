@@ -54,6 +54,12 @@ io.sockets.on('connection', function (socket) {
     io.sockets.emit('updateChat', {username: socket.username, chat: data.chat});
   });
 
+  socket.on('sendMemo', function(data) {
+    routes.updateMemo(data, function(result){
+      io.sockets.emit('updateMemo', result);
+    });
+  });
+
   socket.on('saveQuestion', function(data){
     routes.saveQuestion(data, function() {
       io.sockets.emit('updateQuestion', data.content);

@@ -16,6 +16,7 @@ exports.interview = function(req, res) {
   var id = req.body.id;
   var key = req.body.type;
   model.find({_id:id}, function (err, docs) {
+    if (err) return next(err);
     var type;
     var hData = docs[0];
 
@@ -27,8 +28,7 @@ exports.interview = function(req, res) {
       type = 'APPLICANT';
     }
 
-    if (err) return next(err);
-    res.send({ id: hData._id, content: hData.content, answer: hData.answer, type: type });
+    res.send({ id: hData._id, content: hData.content, answer: hData.answer, memo: hData.memo, type: type });
   });
 };
 
@@ -70,5 +70,56 @@ exports.saveAnswer = function(data, callback) {
   console.log('answer', answer);
   model.update({_id:id}, {answer:answer}, null, function(err){
     callback();
+  });
+exports.updateMemo = function(data, callback) {
+  model.find({_id:data.id}, function (err, docs) {
+    var memo = docs[0].memo || [];
+    var result;
+    if (data.updateType === 'insert') {
+      if (!memo[data.row]) memo[data.row] = [];
+      memo[data.row].push(data.memoData);
+      result = {row:data.row, updateType:data.updateType, memo:memo[data.row]};
+    } else if (data.updateType === 'move') {
+      var newMemo = [];
+      for (var i=0; i<memo.length; i++) {
+        if (!memo[i]) {
+          continue;
+        } else if (data.addRow < 0 && i < data.row && i > data.row+data.addRow ) {
+          delete memo[i];
+        } else if (i < data.row) {
+          newMemo[i] = memo[i];
+        } else {
+          newMemo[i] = memo[i+data.addRow];
+        }
+      }
+      memo = newMemo;
+    } else {
+      var aMemoData = memo[data.row];
+      if (!aMemodata) {
+        throw "데이터가 없습니다.";
+      }
+
+      var index;
+      for(var i=0; i<aMemoData.length; i++) {
+        if (aMemoData[i].memoId === data.memoData.memoId) {
+          index = i;
+          break;
+        }
+      }
+
+      if (index === undefined) {
+        return;
+      }
+
+      if (data.updateType === 'update') {
+        memo[data.row][index] = data.memoData;
+      } else if (data.updateType === 'delete') {
+        delete memo[data.row][index];
+      }
+    }
+
+    model.update({_id:data.id}, {memo:memo}, null, function(err){
+      callback(result);
+    });
   });
 };
