@@ -77,6 +77,7 @@ exports.updateMemo = function(data, callback) {
     var result;
     if (data.updateType === 'insert') {
       if (!memo[data.row]) memo[data.row] = [];
+      data.memoData.memoId = 'memo-' + (new Date().getTime());
       memo[data.row].push(data.memoData);
       result = {row:data.row, updateType:data.updateType, memo:memo[data.row]};
     } else if (data.updateType === 'move') {
@@ -95,7 +96,7 @@ exports.updateMemo = function(data, callback) {
       memo = newMemo;
     } else {
       var aMemoData = memo[data.row];
-      if (!aMemodata) {
+      if (!aMemoData) {
         throw "데이터가 없습니다.";
       }
 
@@ -114,8 +115,9 @@ exports.updateMemo = function(data, callback) {
       if (data.updateType === 'update') {
         memo[data.row][index] = data.memoData;
       } else if (data.updateType === 'delete') {
-        delete memo[data.row][index];
+        memo[data.row].splice(index, 1);
       }
+      result = {row:data.row, updateType:data.updateType, memo:memo[data.row]};
     }
 
     model.update({_id:data.id}, {memo:memo}, null, function(err){

@@ -55,13 +55,18 @@ define([
     },
 
     updateMemo : function(data) {
-      if (data.updateType === 'insert') {
+      if (data.updateType !== 'move') {
         var welLayer = $('#memo-layer-'+data.row);
         var html = this.getMemoLayerHtml(data.memo, data.row);
         var welTmp = $(html);
         welLayer.html(welTmp[0].innerHTML);
         welLayer.attr('data-count', welTmp.attr('data-count'));
-        welLayer.removeClass('insert');
+        if (data.memo.length > 0) {
+          welLayer.removeClass('insert');
+        } else  {
+          welLayer.removeClass('expand');
+          welLayer.addClass('insert');
+        }
       }
     },
 
@@ -115,11 +120,12 @@ define([
       var view = '+';
       var count = 0;
       var addClass = 'insert';
-      if (memo) {
+      if (memo && memo.length > 0) {
         view = count = memo.length;
         addClass = 'expand';
         sMemoList += _.map(memo, function(memoData) {
-          return '<div class="memo-content">'+memoData.memo+'<div class="memo-edit-btn-area"><i class="memo-edit-btn icon-remove-sign" title="삭제"></i><i class="memo-remove-btn icon-edit" title="수정"></i></div></div>';
+          if (!memoData) { return ''}
+          return '<div class="memo-content" data-memoid="'+memoData.memoId+'"><div class="content">'+memoData.memo+'</div><div class="memo-edit-btn-area"><i class="memo-remove-btn icon-remove-sign" title="삭제"></i><i class="memo-edit-btn icon-edit" title="수정"></i></div></div>';
         }).join('');
         sMemoList += '<div class="memo-add-btn-area"><i class="memo-add-btn icon-plus-sign-alt" title="메모 추가"></i></div>';
       }
@@ -268,8 +274,10 @@ define([
       if (!welLayer) {
         return;
       }
+      var id = this.id;
       var welTarget = $(e.target);
       var welIcon = welTarget.parents(".memo-icon");
+      var welContent = welTarget.parents(".memo-content");
       var memoCount = parseInt(welLayer.attr('data-count'));
       var row = parseInt(welLayer.attr('data-row'));
       if (welIcon.length > 0) {
@@ -282,22 +290,43 @@ define([
         }
       } else if (welTarget.hasClass('memo-add-btn')) {
         welLayer.addClass('insert');
-      } else if (welTarget.hasClass('memo-save')) {
-        var id = this.id;
-        var memoData = {
-          id:id,
-          row:row,
-          updateType:'insert',
+      } else if (welTarget.hasClass('memo-edit-btn')) {
+        var content = welContent.find('.content').html();
+        welContent.addClass('edit');
+        welContent.html(welContent.html()+addMemoTemplate);
+        welContent.find('textarea').val(content);
+        welLayer.removeClass('insert');
+      } else if (welTarget.hasClass('memo-remove-btn')) {
+        var data = {
+          id: id,
+          row: row,
+          updateType: 'delete',
           memoData: {
-            memoId:'test',
-            memo:welLayer.find('textarea')[0].value,
-            userId:'test',
-            date:'2013-09-02'
+            memoId: welContent.attr('data-memoid')
           }
+        };
+        this.socket.emit('sendMemo',data);
+      } else if (welTarget.hasClass('memo-save')) {
+        var data = {
+          id: id,
+          row: row,
+          memoData: {
+            memo: welLayer.find('textarea')[0].value,
+            userId: 'test'
+          }
+        };
+        if (welContent.length > 0) {
+          data.updateType = 'update';
+          data.memoData.memoId = welContent.attr('data-memoid');
+        } else  {
+          data.updateType = 'insert';
         }
-        this.socket.emit('sendMemo',memoData);
+        this.socket.emit('sendMemo',data);
       } else if (welTarget.hasClass('memo-cancel')) {
-        if (memoCount === 0) {
+        if (welContent.length > 0) {
+          welContent.find('.memo-add').remove();
+          welContent.removeClass('edit');
+        } else if (memoCount === 0) {
           welLayer.removeClass('expand');
         } else {
           welLayer.removeClass('insert');
