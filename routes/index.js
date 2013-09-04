@@ -80,20 +80,12 @@ exports.updateMemo = function(data, callback) {
       data.memoData.memoId = 'memo-' + (new Date().getTime());
       memo[data.row].push(data.memoData);
       result = {row:data.row, updateType:data.updateType, memo:memo[data.row]};
-    } else if (data.updateType === 'move') {
-      var newMemo = [];
-      for (var i=0; i<memo.length; i++) {
-        if (!memo[i]) {
-          continue;
-        } else if (data.addRow < 0 && i < data.row && i > data.row+data.addRow ) {
-          delete memo[i];
-        } else if (i < data.row) {
-          newMemo[i] = memo[i];
-        } else {
-          newMemo[i] = memo[i+data.addRow];
-        }
-      }
-      memo = newMemo;
+    } else if (data.updateType === 'removeLines') {
+      memo.splice(data.startRow, data.lineLen);
+    } else if (data.updateType === 'addLine') {
+      //작업 중
+      memo.splice(data.startRow, 0, undefined);
+      console.log(memo);
     } else {
       var aMemoData = memo[data.row];
       if (!aMemoData) {

@@ -55,7 +55,16 @@ define([
     },
 
     updateMemo : function(data) {
-      if (data.updateType !== 'move') {
+      if (data.updateType === 'removeLines') {
+        for(var i=data.startRow; i<=data.startRow+data.lineLen; i++) {
+          console.log($('#memo-layer-'+i)[0])
+          if ($('#memo-layer-'+i)[0]) {
+            $('#memo-layer-'+i).remove();
+          }
+        }
+      } else if (data.updateType === 'addLine') {
+        console.log('구현 필요');
+      } else {
         var welLayer = $('#memo-layer-'+data.row);
         var html = this.getMemoLayerHtml(data.memo, data.row);
         var welTmp = $(html);
@@ -134,20 +143,30 @@ define([
     },
 
     renderMemo : function(aMemo){
-      var sHtml = _.map(aMemo, function(memo, i) {
-        return this.getMemoLayerHtml(memo, i);
-      }, this);
+      var sHtml = '';
+      for(var i=0; i<aMemo.length; i++) {
+        sHtml += this.getMemoLayerHtml(aMemo[i], i);
+      }
       $('#memo-layer-area').html(sHtml);
     },
 
     // ### changeAnswer
     // > 코딩
     changeAnswer : function(e) {
+      var memoData;
+      if (e.data.action === 'insertText' && e.data.text === '\n') {
+        memoData = {row: e.data.range.start.row, updateType:'addLine', addRow:1};
+      } else if (e.data.action === 'removeText' && e.data.text === '\n') {
+        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: 1};
+      } else if (e.data.action === 'removeLines') {
+        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: e.data.lines.length};
+      }
       var data = {
         id : this.id,
         type : this.type,
         answer : this.aceEditor.getValue(),
-        cursorPos : this.aceEditor.getCursorPosition()
+        cursorPos : this.aceEditor.getCursorPosition(),
+        memoData : memoData
       };
 
       this.socket.emit('saveAnswer',data);
