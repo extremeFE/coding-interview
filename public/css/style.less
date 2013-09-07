@@ -131,13 +131,28 @@ a {
         .box-sizing();
         .rounded(3px);
         padding-bottom:5px;
-        .memo-content {
-          width:190px;
-          .box-sizing();
-          background-color: #eee;
-          padding:5px;
-          margin:5px 5px 0px 5px;
-          .rounded(3px);
+
+        i {
+          cursor:pointer;
+          margin-top:2px;
+          float:right;
+        }
+
+        .memo-edit-btn-area {
+          width:100%;
+          height:15px;
+
+          .memo-edit-btn {
+            margin-right:5px;
+          }
+        }
+
+        .memo-add-btn-area {
+          width:100%;
+          i {
+            margin-right:5px;
+            color:#fff;
+          }
         }
 
         .memo-add {
@@ -151,26 +166,30 @@ a {
           }
         }
 
-        i {
-          cursor:pointer;
-          margin-top:2px;
-          float:right;
-        }
+        .memo-content {
+          width:190px;
+          .box-sizing();
+          background-color: #eee;
+          padding:5px;
+          margin:5px 5px 0px 5px;
+          .rounded(3px);
+          .memo-add {
+            display:block;
+            width:180px;
+            margin:0px;
+            textarea {
+              width:165px;
+            }
 
-        .memo-edit-btn-area {
-          width:100%;
-          height:15px;
-
-          .memo-remove-btn {
-            margin-right:5px;
+            .memo-add-btn-area {
+              height:15px;
+              i {
+                color: #555;
+              }
+            }
           }
-        }
-
-        .memo-add-btn-area {
-          width:100%;
-          i {
-            margin-right:5px;
-            color:#fff;
+          &.edit .content, &.edit .memo-edit-btn-area {
+            display:none;
           }
         }
       }
@@ -196,6 +215,7 @@ a {
   width:250px;
   border:1px solid #555;
   background-color:#fff;
+  .rounded(3px);
   #chat-bar {
     width:100%;
     background-color: #eeefd3;

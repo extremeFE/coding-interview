@@ -71,6 +71,29 @@ exports.saveAnswer = function(data, callback) {
   model.update({_id:id}, {answer:answer}, null, function(err){
     callback();
   });
+};
+
+
+exports.addLine = function(data, callback) {
+  model.find({_id:data.id}, function (err, docs) {
+    var memo = docs[0].memo || [];
+    memo.splice(data.startRow, 0, undefined);
+    model.update({_id:data.id}, {memo:memo}, null, function(err){
+      callback('addedLine');
+    });
+  });
+};
+
+exports.removeLines = function(data, callback) {
+  model.find({_id:data.id}, function (err, docs) {
+    var memo = docs[0].memo || [];
+    memo.splice(data.startRow, data.lineLen);
+    model.update({_id:data.id}, {memo:memo}, null, function(err){
+      callback('removedLines');
+    });
+  });
+};
+
 exports.updateMemo = function(data, callback) {
   model.find({_id:data.id}, function (err, docs) {
     var memo = docs[0].memo || [];
@@ -80,12 +103,6 @@ exports.updateMemo = function(data, callback) {
       data.memoData.memoId = 'memo-' + (new Date().getTime());
       memo[data.row].push(data.memoData);
       result = {row:data.row, updateType:data.updateType, memo:memo[data.row]};
-    } else if (data.updateType === 'removeLines') {
-      memo.splice(data.startRow, data.lineLen);
-    } else if (data.updateType === 'addLine') {
-      //작업 중
-      memo.splice(data.startRow, 0, undefined);
-      console.log(memo);
     } else {
       var aMemoData = memo[data.row];
       if (!aMemoData) {

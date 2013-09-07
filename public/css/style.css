@@ -129,6 +129,35 @@ a {
   border-radius: 3px;
   padding-bottom: 5px;
 }
+#memo-area #memo-layer-area .memo-layer .memo-content-list i {
+  cursor: pointer;
+  margin-top: 2px;
+  float: right;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-edit-btn-area {
+  width: 100%;
+  height: 15px;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-edit-btn-area .memo-edit-btn {
+  margin-right: 5px;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add-btn-area {
+  width: 100%;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add-btn-area i {
+  margin-right: 5px;
+  color: #fff;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add {
+  width: 190px;
+  display: none;
+  margin: 5px 5px 0px 5px;
+}
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add textarea {
+  width: 175px;
+  height: 40px;
+  margin-bottom: 0px;
+}
 #memo-area #memo-layer-area .memo-layer .memo-content-list .memo-content {
   width: 190px;
   -ms-box-sizing: border-box;
@@ -142,34 +171,23 @@ a {
   -moz-border-radius: 3px;
   border-radius: 3px;
 }
-#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add {
-  width: 190px;
-  display: none;
-  margin: 5px 5px 0px 5px;
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-content .memo-add {
+  display: block;
+  width: 180px;
+  margin: 0px;
 }
-#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add textarea {
-  width: 175px;
-  height: 40px;
-  margin-bottom: 0px;
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-content .memo-add textarea {
+  width: 165px;
 }
-#memo-area #memo-layer-area .memo-layer .memo-content-list i {
-  cursor: pointer;
-  margin-top: 2px;
-  float: right;
-}
-#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-edit-btn-area {
-  width: 100%;
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-content .memo-add .memo-add-btn-area {
   height: 15px;
 }
-#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-edit-btn-area .memo-remove-btn {
-  margin-right: 5px;
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-content .memo-add .memo-add-btn-area i {
+  color: #555;
 }
-#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add-btn-area {
-  width: 100%;
-}
-#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-add-btn-area i {
-  margin-right: 5px;
-  color: #fff;
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-content.edit .content,
+#memo-area #memo-layer-area .memo-layer .memo-content-list .memo-content.edit .memo-edit-btn-area {
+  display: none;
 }
 #memo-area #memo-layer-area .memo-layer.insert .memo-add-btn {
   display: none;
@@ -192,6 +210,9 @@ a {
   width: 250px;
   border: 1px solid #555;
   background-color: #fff;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
 }
 #chat-layer #chat-bar {
   width: 100%;

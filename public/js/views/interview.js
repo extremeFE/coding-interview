@@ -12,6 +12,8 @@ define([
   'summernote'
 ], function($, _, Backbone, io, ace, interviewCollection, interviewTemplate, memoTemplate) {
   var addMemoTemplate = '<div class="memo-add"><textarea></textarea><div class="memo-add-btn-area"><i class="memo-cancel icon-ban-circle" title="취소"></i><i class="memo-save icon-save" title="저장"></i></div></div>';
+  var LINE_HEIGHT = 16;
+  var PREFIX_ID = 'memo-layer-';
   var InterviewView = Backbone.View.extend({
     el: $('#container'),
     initialize: function (data) {
@@ -20,6 +22,8 @@ define([
       this.socket.on('updateQuestion', _.bind(this.updateQuestion, this));
       this.socket.on('updateAnswer', _.bind(this.updateAnswer, this));
       this.socket.on('updateChat', _.bind(this.updateChat, this));
+      this.socket.on('addedLine', _.bind(this.addedLine, this));
+      this.socket.on('removedLines', _.bind(this.removedLines, this));
       this.socket.on('updateMemo', _.bind(this.updateMemo, this));
     },
 
@@ -54,28 +58,68 @@ define([
       }
     },
 
+    updateLayerInfo : function(welLayer, row) {
+      welLayer.attr('id', PREFIX_ID+row);
+      welLayer.attr('data-row', row);
+      welLayer.css('top',row*LINE_HEIGHT);
+    },
+
+    // ### addedLine
+    addedLine : function(data) {
+      // 기존 메모 레이어 라인 증가
+      var aAddLineLayer = _.filter($('.memo-layer'), function(elLayer) {
+        return data.startRow <= parseInt($(elLayer).attr('data-row'));
+      });
+
+      _.each(aAddLineLayer, function(elLayer) {
+        var welLayer = $(elLayer);
+        var row = parseInt(welLayer.attr('data-row')) + 1;
+        this.updateLayerInfo(welLayer, row);
+      }, this);
+
+      // 신규 메모 레이어 추가
+      $('#memo-layer-area').html($('#memo-layer-area').html()+this.getMemoLayerHtml([], data.startRow));
+    },
+
+    // ### removedLines
+    removedLines : function(data) {
+      var aMemoLayer = $('.memo-layer'),
+          startRow = data.startRow,
+          endRow = data.startRow+data.lineLen;
+
+      // 삭제 라인 메모 제거
+      var aRemoveLineLayer = _.filter(aMemoLayer, function(elLayer) {
+        var row = parseInt($(elLayer).attr('data-row'));
+        return startRow <= row && endRow >= row;
+      });
+      _.each(aRemoveLineLayer, function(elLayer) {
+        $(elLayer).remove();
+      });
+
+      // 삭제 라인 하위 메모 레이어 라인 변경
+      var aMinusLineLayer = _.filter(aMemoLayer, function(elLayer) {
+        var row = parseInt($(elLayer).attr('data-row'));
+        return endRow+1 <= row;
+      });
+      _.each(aMinusLineLayer, function(elLayer) {
+        var welLayer = $(elLayer),
+            row = parseInt(welLayer.attr('data-row'))-data.lineLen;
+        this.updateLayerInfo(welLayer, row);
+      }, this);
+    },
+
+    // ### updateMemo
     updateMemo : function(data) {
-      if (data.updateType === 'removeLines') {
-        for(var i=data.startRow; i<=data.startRow+data.lineLen; i++) {
-          console.log($('#memo-layer-'+i)[0])
-          if ($('#memo-layer-'+i)[0]) {
-            $('#memo-layer-'+i).remove();
-          }
-        }
-      } else if (data.updateType === 'addLine') {
-        console.log('구현 필요');
-      } else {
-        var welLayer = $('#memo-layer-'+data.row);
-        var html = this.getMemoLayerHtml(data.memo, data.row);
-        var welTmp = $(html);
-        welLayer.html(welTmp[0].innerHTML);
-        welLayer.attr('data-count', welTmp.attr('data-count'));
-        if (data.memo.length > 0) {
-          welLayer.removeClass('insert');
-        } else  {
-          welLayer.removeClass('expand');
-          welLayer.addClass('insert');
-        }
+      var welLayer = $('#'+PREFIX_ID+data.row);
+      var html = this.getMemoLayerHtml(data.memo, data.row);
+      var welTmp = $(html);
+      welLayer.html(welTmp[0].innerHTML);
+      welLayer.attr('data-count', welTmp.attr('data-count'));
+      if (data.memo.length > 0) {
+        welLayer.removeClass('insert');
+      } else  {
+        welLayer.removeClass('expand');
+        welLayer.addClass('insert');
       }
     },
 
@@ -155,7 +199,8 @@ define([
     changeAnswer : function(e) {
       var memoData;
       if (e.data.action === 'insertText' && e.data.text === '\n') {
-        memoData = {row: e.data.range.start.row, updateType:'addLine', addRow:1};
+        $('#'+PREFIX_ID+e.data.range.start.row-1).removeClass('select');
+        memoData = {startRow: e.data.range.start.row, updateType:'addLine'};
       } else if (e.data.action === 'removeText' && e.data.text === '\n') {
         memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: 1};
       } else if (e.data.action === 'removeLines') {
@@ -175,13 +220,11 @@ define([
     // ### viewSelectionRange
     // range 정보 표시하기
     viewSelectionRange : function(e) {
-      if (this.selectedRow !== undefined) {
-        var prevLayer = $('#memo-layer-'+this.selectedRow);
-        prevLayer.removeClass('select');
-//        prevLayer.removeClass('expand');
+      if (this.selectedMemoLayer) {
+        this.selectedMemoLayer.removeClass('select');
       }
       var range = this.range = this.aceEditor.getSelectionRange();
-      this.selectedRow = range.start.row;
+      this.selectedMemoLayer = $('#'+PREFIX_ID+range.start.row);
       $('#memo-layer-'+range.start.row).addClass('select');
       $('#range-info').html((range.start.row+1)+':'+range.start.column+'-'+(range.end.row+1)+':'+range.end.column);
     },

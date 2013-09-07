@@ -70,6 +70,13 @@ io.sockets.on('connection', function (socket) {
     routes.saveAnswer(data, function(){
       io.sockets.emit('updateAnswer', data);
     });
+
+    if (!data.memoData) { return; }
+
+    data.memoData.id = data.id;
+    routes[data.memoData.updateType](data.memoData, function(emitType){
+      io.sockets.emit(emitType, data.memoData);
+    });
   });
 });
 
