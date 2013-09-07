@@ -61,6 +61,7 @@ define([
     updateLayerInfo : function(welLayer, row) {
       welLayer.attr('id', PREFIX_ID+row);
       welLayer.attr('data-row', row);
+      welLayer.removeClass('select');
       welLayer.css('top',row*LINE_HEIGHT);
     },
 
@@ -79,6 +80,7 @@ define([
 
       // 신규 메모 레이어 추가
       $('#memo-layer-area').html($('#memo-layer-area').html()+this.getMemoLayerHtml([], data.startRow));
+      this.viewSelectionRange();
     },
 
     // ### removedLines
@@ -183,7 +185,7 @@ define([
         sMemoList += '<div class="memo-add-btn-area"><i class="memo-add-btn icon-plus-sign-alt" title="메모 추가"></i></div>';
       }
       sMemoList += addMemoTemplate;
-      return _.template(memoTemplate, {row:row, count:count, top:row*16, addClass:addClass, view:view, list:sMemoList});
+      return _.template(memoTemplate, {row:row, count:count, top:row*LINE_HEIGHT, addClass:addClass, view:view, list:sMemoList});
     },
 
     renderMemo : function(aMemo){
@@ -219,14 +221,15 @@ define([
 
     // ### viewSelectionRange
     // range 정보 표시하기
-    viewSelectionRange : function(e) {
+    viewSelectionRange : function() {
       if (this.selectedMemoLayer) {
         this.selectedMemoLayer.removeClass('select');
       }
       var range = this.range = this.aceEditor.getSelectionRange();
-      this.selectedMemoLayer = $('#'+PREFIX_ID+range.start.row);
-      $('#memo-layer-'+range.start.row).addClass('select');
+      var welLayer = $('#'+PREFIX_ID+range.start.row);
+      welLayer.addClass('select');
       $('#range-info').html((range.start.row+1)+':'+range.start.column+'-'+(range.end.row+1)+':'+range.end.column);
+      this.selectedMemoLayer = welLayer;
     },
 
     events: {
