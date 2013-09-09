@@ -5,12 +5,12 @@
     <button class="question-edit-btn btn">편집</button>
     <button class="question-save-btn btn">저장</button>
   </div>
-  <div class="well" style="margin-top:10px;">
+  <div class="well" style="margin-top:20px;">
     <div class="row-fluid">
-      <div class="span9">
+      <div id="code-area" class="span12">
         <div id="editor"><%= answer %></div>
       </div>
-      <div id="memo-area" class="span3">
+      <div id="memo-area" class="memo-block span3">
         <div id="memo-layer-area">
           <div class="memo-layer">
             <div class="memo-icon select"><span>2</span></div>
@@ -31,7 +31,11 @@
       </div>
     </div>
     <div class="row-fluid" style="margin-top:10px;">
-      <div class="span6">
+      <div id="range-area" class="span3">
+        <span id="range-info"></span>
+        <button id="send-range-link-btn" class="btn btn-info btn-small">Chat</button>
+      </div>
+      <div id="editor-theme-area" class="span9">
         <select id="select-lang">
           <option value="c_cpp">C, C++</option>
           <option value="java">Java</option>
@@ -49,14 +53,14 @@
           <option value="twilight">Twilight</option>
         </select>
       </div>
-      <div class="span3">
-        <span id="range-info" style="display:inline-block;width:150px;margin-right:5px;text-align:right;"></span>
-        <button id="send-range-link-btn" class="btn btn-info btn-small">Chat</button>
-      </div>
-      <div class="span3">
+      <div class="memo-block span3">
 
       </div>
     </div>
+  </div>
+  <div>
+    <button id="finish-coding-btn" class="btn btn-primary">코드 제출</button>
+    <button id="finish-interview-btn" class="btn btn-primary">코딩 인터뷰 종료</button>
   </div>
   <div id="chat-layer">
     <div id="chat-bar">

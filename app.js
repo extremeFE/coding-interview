@@ -60,13 +60,13 @@ io.sockets.on('connection', function (socket) {
     });
   });
 
-  socket.on('saveQuestion', function(data){
+  socket.on('saveQuestion', function(data) {
     routes.saveQuestion(data, function() {
       io.sockets.emit('updateQuestion', data.content);
     });
   });
 
-  socket.on('saveAnswer', function(data){
+  socket.on('saveAnswer', function(data) {
     routes.saveAnswer(data, function(){
       io.sockets.emit('updateAnswer', data);
     });
@@ -78,6 +78,12 @@ io.sockets.on('connection', function (socket) {
       io.sockets.emit(emitType, data.memoData);
     });
   });
+
+  socket.on('finishCoding', function(data) {
+    routes.finishCoding(data.id, function() {
+      io.sockets.emit('startEstimation');
+    });
+  })
 });
 
 server.listen(app.get('port'), function(){

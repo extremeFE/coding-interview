@@ -28,7 +28,7 @@ exports.interview = function(req, res) {
       type = 'APPLICANT';
     }
 
-    res.send({ id: hData._id, content: hData.content, answer: hData.answer, memo: hData.memo, type: type });
+    res.send({ id: hData._id, content: hData.content, answer: hData.answer, memo: hData.memo, type: type, state: hData.state });
   });
 };
 
@@ -42,6 +42,7 @@ exports.createInterview = function(req, res) {
   var email = req.body.mail;
   var time = new Date().getTime();
   var hData = {
+    state: 'TEST',
     adminKey: getKey(time+'admin'),
     interviewerKey: getKey(time+'interviewer'),
     applicantKey: getKey(time+'applicant')
@@ -132,5 +133,11 @@ exports.updateMemo = function(data, callback) {
     model.update({_id:data.id}, {memo:memo}, null, function(err){
       callback(result);
     });
+  });
+};
+
+exports.finishCoding = function(id, callback) {
+  model.update({_id:id}, {state:'ESTIMATION'}, null, function(err){
+    callback();
   });
 };

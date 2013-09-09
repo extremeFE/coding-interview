@@ -25,6 +25,7 @@ define([
       this.socket.on('addedLine', _.bind(this.addedLine, this));
       this.socket.on('removedLines', _.bind(this.removedLines, this));
       this.socket.on('updateMemo', _.bind(this.updateMemo, this));
+      this.socket.on('startEstimation', _.bind(this.startEstimation, this));
     },
 
     // ### updateQuestion
@@ -125,6 +126,19 @@ define([
       }
     },
 
+    // 평가 시작
+    startEstimation : function() {
+      this.$el.addClass('estimation');
+      var elCodeArea = $('#code-area');
+      var elThemeArea = $('#editor-theme-area');
+      elCodeArea.removeClass('span12');
+      elCodeArea.addClass('span9');
+
+      elThemeArea.removeClass('span9');
+      elThemeArea.addClass('span6');
+      this.aceEditor.setReadOnly(true);
+    },
+
     render: function() {
       this.collection = new interviewCollection();
       var that = this;
@@ -165,6 +179,10 @@ define([
           setTimeout(function() {
             that.memo.length = that.aceEditor.getLastVisibleRow() + 1;
             that.renderMemo(that.memo);
+
+            if (model.get('state') === 'ESTIMATION') {
+              that.startEstimation();
+            }
           }, 100);
         }
       });
@@ -242,7 +260,8 @@ define([
       "click #chat-bar": "expandChat",
       "click #chat-area": "selectRangeLink",
       "keydown #chat": 'sendChat',
-      "click #memo-area": "clickMemoArea"
+      "click #memo-area": "clickMemoArea",
+      "click #finish-coding-btn": "finishCoding"
     },
 
     // ### editQuestion
@@ -398,6 +417,11 @@ define([
         }
         welLayer.find('textarea').val('');
       }
+    },
+
+    finishCoding : function() {
+      var id = this.id;
+      this.socket.emit('finishCoding',{id:id});
     }
   });
 

@@ -8,7 +8,8 @@ define([
       content: "",
       answer: "",
       memo: [],
-      type:""
+      type:"",
+      state:""
     }, url: '/interview'
   });
 
