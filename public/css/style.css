@@ -227,6 +227,9 @@ a {
 .estimation.admin #finish-interview-btn {
   display: block;
 }
+.end.admin #finish-interview-btn {
+  display: none;
+}
 #chat-layer {
   z-index: 1;
   -ms-box-sizing: border-box;

@@ -136,8 +136,8 @@ exports.updateMemo = function(data, callback) {
   });
 };
 
-exports.finishCoding = function(id, callback) {
-  model.update({_id:id}, {state:'ESTIMATION'}, null, function(err){
+exports.changeInterviewState = function(id, state, callback) {
+  model.update({_id:id}, {state:state}, null, function(err){
     callback();
   });
 };

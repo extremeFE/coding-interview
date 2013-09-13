@@ -26,6 +26,7 @@ define([
       this.socket.on('removedLines', _.bind(this.removedLines, this));
       this.socket.on('updateMemo', _.bind(this.updateMemo, this));
       this.socket.on('startEstimation', _.bind(this.startEstimation, this));
+      this.socket.on('endInterview', _.bind(this.endInterview, this));
     },
 
     // ### updateQuestion
@@ -127,8 +128,11 @@ define([
     },
 
     // 평가 시작
-    startEstimation : function() {
+    startEstimation : function(state) {
       this.$el.addClass('estimation');
+      if (state === 'END') {
+        this.$el.addClass('end');
+      }
       var elCodeArea = $('#code-area');
       var elThemeArea = $('#editor-theme-area');
       elCodeArea.removeClass('span12');
@@ -137,6 +141,14 @@ define([
       elThemeArea.removeClass('span9');
       elThemeArea.addClass('span6');
       this.aceEditor.setReadOnly(true);
+    },
+
+    // 인터뷰 종료
+    endInterview : function() {
+      this.$el.addClass('end');
+      if (this.type === 'APPLICANT') {
+        this.$el.html("인터뷰가 종료되었습니다.");
+      }
     },
 
     render: function() {
@@ -153,8 +165,15 @@ define([
 
           that.socket.emit('addUser',{type:that.type});
 
-          var sHtml = _.template(interviewTemplate, {content: model.get('content'), answer: model.get('answer')});
+          var state = model.get('state');
+          if (that.type === 'APPLICANT' && state === 'END') {
+            that.endInterview();
+            return;
+          }
+          
+          var names = {ADMIN:'관리자', INTERVIEWER:'면접관', APPLICANT:'지원자'};
           var sHtml = _.template(interviewTemplate, {content: model.get('content'), answer: model.get('answer'), type:names[that.type]});
+          that.$el.addClass(that.type.toLowerCase());
           that.$el.html(sHtml);
 
           if (that.type === 'ADMIN') {
@@ -180,8 +199,8 @@ define([
             that.memo.length = that.aceEditor.getLastVisibleRow() + 1;
             that.renderMemo(that.memo);
 
-            if (model.get('state') === 'ESTIMATION') {
-              that.startEstimation();
+            if (state === 'ESTIMATION' || state === 'END') {
+              that.startEstimation(state);
             }
           }, 100);
         }
@@ -261,7 +280,8 @@ define([
       "click #chat-area": "selectRangeLink",
       "keydown #chat": 'sendChat',
       "click #memo-area": "clickMemoArea",
-      "click #finish-coding-btn": "finishCoding"
+      "click #finish-coding-btn": "finishCoding",
+      "click #finish-interview-btn": "finishInterview"
     },
 
     // ### editQuestion
@@ -422,6 +442,11 @@ define([
     finishCoding : function() {
       var id = this.id;
       this.socket.emit('finishCoding',{id:id});
+    },
+
+    finishInterview : function() {
+      var id = this.id;
+      this.socket.emit('finishInterview',{id:id});
     }
   });
 

@@ -80,10 +80,16 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('finishCoding', function(data) {
-    routes.finishCoding(data.id, function() {
+    routes.changeInterviewState(data.id, 'ESTIMATION', function() {
       io.sockets.emit('startEstimation');
     });
-  })
+  });
+
+  socket.on('finishInterview', function(data) {
+    routes.changeInterviewState(data.id, 'END', function() {
+      io.sockets.emit('endInterview');
+    });
+  });
 });
 
 server.listen(app.get('port'), function(){
