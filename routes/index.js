@@ -2,6 +2,8 @@ var model = require('./interviewModel');
 var crypto = require("crypto");
 var mail = require('./mail');
 var _ = require("underscore");
+var requirejs = require('requirejs');
+var cnst = requirejs('public/js/share/const');
 
 var interviewTemplate = '<h3>실시간 코딩 인터뷰 페이지 생성 완료</h3>' +
     '<p>실시간 코딩 인터뷰 페이지가 생성되었습니다.</p>' +
@@ -19,13 +21,13 @@ exports.interview = function(req, res) {
     if (err) return next(err);
     var type;
     var hData = docs[0];
-
+console.log('admin:', cnst);
     if (hData.adminKey === key) {
-      type = 'ADMIN';
+      type = cnst.MEM_ADMIN;
     } else if (hData.interviewerKey === key) {
-      type = 'INTERVIEWER';
+      type = cnst.MEM_INTERVIEWER;
     } else {
-      type = 'APPLICANT';
+      type = cnst.MEM_APPLICANT;
     }
 
     res.send({ id: hData._id, content: hData.content, answer: hData.answer, memo: hData.memo, type: type, state: hData.state });

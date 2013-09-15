@@ -8,7 +8,9 @@ var express = require('express')
   , routes = require('./routes')
   , mail = require('./routes/mail')
   , http = require('http')
-  , path = require('path');
+  , path = require('path')
+  , requirejs = require('requirejs')
+  , cnst = requirejs('public/js/share/const');
 
 var app = express();
 
@@ -38,15 +40,18 @@ app.post('/createInterview', routes.createInterview);
 var server = http.createServer(app),
     io = socketio.listen(server),
     usernames = {},
-    typeCounts = {ADMIN:0, INTERVIEWER:0, APPLICANT:0},
-    names = {ADMIN:'관리자', INTERVIEWER:'면접관', APPLICANT:'지원자'};
+    typeCounts = {};
 
 io.sockets.on('connection', function (socket) {
   socket.on('addUser', function(data) {
-    var typeCount = typeCounts[data.type] + 1;
-    typeCounts[data.type] = typeCount;
-    var username = names[data.type] + (typeCount===1 ? '' : typeCount);
-    socket.username = username
+    if (!typeCounts[data.id]) {
+      typeCounts[data.id] = [];
+    }
+    var typeCount = (typeCounts[data.id][data.type]||0) + 1;
+    typeCounts[data.id][data.type] = typeCount;
+    var username = cnst.MEM_NAME[data.type] + (typeCount===1 ? '' : typeCount);
+    socket.id = data.id;
+    socket.username = username;
     usernames[username] = username;
   });
 

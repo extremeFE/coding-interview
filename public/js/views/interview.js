@@ -5,12 +5,13 @@ define([
   'backbone',
   'io',
   'ace',
+  'share/const',
   'collections/interview',
   'text!/templates/interview.html',
   'text!/templates/memo.html',
   'bootstrap',
   'summernote'
-], function($, _, Backbone, io, ace, interviewCollection, interviewTemplate, memoTemplate) {
+], function($, _, Backbone, io, ace, cnst, interviewCollection, interviewTemplate, memoTemplate) {
   var addMemoTemplate = '<div class="memo-add"><textarea></textarea><div class="memo-add-btn-area"><i class="memo-cancel icon-ban-circle" title="취소"></i><i class="memo-save icon-save" title="저장"></i></div></div>';
   var LINE_HEIGHT = 16;
   var PREFIX_ID = 'memo-layer-';
@@ -38,7 +39,7 @@ define([
     // ### updateAnswer
     // > 지원자가 코딩을 하면 관리자와 면접관의 코딩 영역 내용 변경
     updateAnswer : function(data) {
-      if (this.type === 'APPLICANT') {
+      if (this.type === cnst.MEM_APPLICANT) {
         return;
       }
       this.aceEditor.setValue(data.answer, -1);
@@ -146,7 +147,7 @@ define([
     // 인터뷰 종료
     endInterview : function() {
       this.$el.addClass('end');
-      if (this.type === 'APPLICANT') {
+      if (this.type === cnst.MEM_APPLICANT) {
         this.$el.html("인터뷰가 종료되었습니다.");
       }
     },
@@ -162,21 +163,19 @@ define([
           that.id = model.get('id');
           that.type = model.get('type');
           that.memo = model.get('memo');
-
-          that.socket.emit('addUser',{type:that.type});
+          that.socket.emit('addUser',{id:that.id, type:that.type});
 
           var state = model.get('state');
-          if (that.type === 'APPLICANT' && state === 'END') {
+          if (that.type === cnst.MEM_APPLICANT && state === 'END') {
             that.endInterview();
             return;
           }
-          
-          var names = {ADMIN:'관리자', INTERVIEWER:'면접관', APPLICANT:'지원자'};
-          var sHtml = _.template(interviewTemplate, {content: model.get('content'), answer: model.get('answer'), type:names[that.type]});
-          that.$el.addClass(that.type.toLowerCase());
+
+          var sHtml = _.template(interviewTemplate, {content: model.get('content'), answer: model.get('answer'), type:cnst.MEM_NAME[that.type]});
+          that.$el.addClass(cnst.MEM_CLASS[that.type]);
           that.$el.html(sHtml);
 
-          if (that.type === 'ADMIN') {
+          if (that.type === cnst.MEM_ADMIN) {
             $('.question-save-btn').hide();
           } else {
             $('.question-btn-area').remove();
@@ -186,7 +185,7 @@ define([
           that.aceEditor.setTheme("ace/theme/monokai");
           that.aceEditor.getSession().setMode("ace/mode/javascript");
 
-          if (that.type === 'APPLICANT') {
+          if (that.type === cnst.MEM_APPLICANT) {
             that.aceEditor.on("change", _.bind(that.changeAnswer, that));
           } else {
             that.aceEditor.setReadOnly(true);
@@ -320,10 +319,14 @@ define([
       this.aceEditor.setTheme("ace/theme/" + e.target.value);
     },
 
+    // ### collapseChat
+    // > 채팅 레이어 접기
     collapseChat : function() {
       $('#chat-layer').addClass('collapsed');
     },
 
+    // ### expandChat
+    // > 채팅 레이어 펼치기
     expandChat : function(e) {
       if (e.target.id !== 'chat-collapse' && $('#chat-layer').hasClass('collapsed')) {
         $('#chat-layer').removeClass('collapsed');
