@@ -14,6 +14,14 @@ a {
 #container {
   padding-top: 25px;
 }
+#state-area {
+  margin-bottom: 15px;
+}
+#state-area span {
+  width: 22.5%;
+  text-align: center;
+  line-height: 2;
+}
 .summernote.well {
   margin-bottom: 0px;
   height: 150px;

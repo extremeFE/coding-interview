@@ -28,12 +28,16 @@ define([
       this.socket.on('updateMemo', _.bind(this.updateMemo, this));
       this.socket.on('startEstimation', _.bind(this.startEstimation, this));
       this.socket.on('endInterview', _.bind(this.endInterview, this));
+      this.socket.on('updateUserList', _.bind(this.updateUserList, this));
     },
 
     // ### updateQuestion
     // > 관리자가 문제를 변경하면 문제영역 내용 변경
-    updateQuestion : function(sHTML) {
-      $('.summernote').html(sHTML);
+    updateQuestion : function(data) {
+      $('.summernote').html(data.sHTML);
+      if (data.state) {
+        this.changeStateView(data.state);
+      }
     },
 
     // ### updateAnswer
@@ -131,9 +135,13 @@ define([
     // 평가 시작
     startEstimation : function(state) {
       this.$el.addClass('estimation');
+      state = state || 'ESTIMATION';
+
       if (state === 'END') {
         this.$el.addClass('end');
       }
+      this.changeStateView(state);
+
       var elCodeArea = $('#code-area');
       var elThemeArea = $('#editor-theme-area');
       elCodeArea.removeClass('span12');
@@ -149,6 +157,8 @@ define([
       this.$el.addClass('end');
       if (this.type === cnst.MEM_APPLICANT) {
         this.$el.html("인터뷰가 종료되었습니다.");
+      } else {
+        this.changeStateView('END');
       }
     },
 
@@ -174,6 +184,8 @@ define([
           var sHtml = _.template(interviewTemplate, {content: model.get('content'), answer: model.get('answer'), type:cnst.MEM_NAME[that.type]});
           that.$el.addClass(cnst.MEM_CLASS[that.type]);
           that.$el.html(sHtml);
+
+          that.changeStateView(state);
 
           if (that.type === cnst.MEM_ADMIN) {
             $('.question-save-btn').hide();
@@ -203,6 +215,13 @@ define([
             }
           }, 100);
         }
+      });
+    },
+
+    changeStateView : function(state) {
+      var index = cnst.STATE_INDEX[state];
+      _.each($('#state-area .label'), function(el, i) {
+        el.className = i===index ? 'label label-info' : 'label';
       });
     },
 

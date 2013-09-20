@@ -44,7 +44,7 @@ exports.createInterview = function(req, res) {
   var email = req.body.mail;
   var time = new Date().getTime();
   var hData = {
-    state: 'TEST',
+    state: 'START',
     adminKey: getKey(time+'admin'),
     interviewerKey: getKey(time+'interviewer'),
     applicantKey: getKey(time+'applicant')
@@ -58,19 +58,24 @@ exports.createInterview = function(req, res) {
 };
 
 exports.saveQuestion = function(data, callback) {
-  var id = data.id;
-//  var type = req.body.type;
-  var content = data.content;
-  model.update({_id:id}, {content:content}, null, function(err){
-    callback();
-//    res.send('success');
+  var resultState,
+      updateData  = {content:data.content};
+  model.find({_id:data.id}, function (err, docs) {
+    var state = docs[0].state;
+    if (state === 'START') {
+      updateData['state'] = resultState = 'TEST';
+    }
+    model.update({_id:data.id}, updateData, null, function(err){
+      callback(resultState);
+    });
   });
+
+
 };
 
 exports.saveAnswer = function(data, callback) {
   var id = data.id;
   var answer = data.answer;
-  console.log('answer', answer);
   model.update({_id:id}, {answer:answer}, null, function(err){
     callback();
   });

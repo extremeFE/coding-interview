@@ -66,8 +66,8 @@ io.sockets.on('connection', function (socket) {
   });
 
   socket.on('saveQuestion', function(data) {
-    routes.saveQuestion(data, function() {
-      io.sockets.emit('updateQuestion', data.content);
+    routes.saveQuestion(data, function(state) {
+      io.sockets.emit('updateQuestion', {content:data.content, state: state});
     });
   });
 

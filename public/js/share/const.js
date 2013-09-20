@@ -10,6 +10,7 @@ define([], function() {
     MEM_INTERVIEWER : 1,
     MEM_APPLICANT : 2,
     MEM_NAME : ['관리자', '면접관', '지원자'],
-    MEM_CLASS : ['admin', 'interviewer', 'applicant']
+    MEM_CLASS : ['admin', 'interviewer', 'applicant'],
+    STATE_INDEX : {'START':0, 'TEST':1, 'ESTIMATION':2, 'END':3}
   };
 });
