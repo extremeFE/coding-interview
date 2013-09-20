@@ -13,6 +13,7 @@ define([
   'summernote'
 ], function($, _, Backbone, io, ace, cnst, interviewCollection, interviewTemplate, memoTemplate) {
   var addMemoTemplate = '<div class="memo-add"><textarea></textarea><div class="memo-add-btn-area"><i class="memo-cancel icon-ban-circle" title="취소"></i><i class="memo-save icon-save" title="저장"></i></div></div>';
+  var userTemplate = ' <span class="badge <%= addClass %>"><%= nickname %></span>'
   var LINE_HEIGHT = 16;
   var PREFIX_ID = 'memo-layer-';
   var InterviewView = Backbone.View.extend({
@@ -162,6 +163,13 @@ define([
       }
     },
 
+    updateUserList : function(data) {
+      var aHtml = _.map(data.users, function(user) {
+        return _.template(userTemplate, {addClass:cnst.MEM_LABEL_CLASS[user.type], nickname:user.nickname+'('+cnst.MEM_NAME[user.type]+')'});
+      });
+      $('#user-list-area').html(aHtml.join(''));
+    },
+
     render: function() {
       this.collection = new interviewCollection();
       var that = this;
@@ -173,9 +181,11 @@ define([
           that.id = model.get('id');
           that.type = model.get('type');
           that.memo = model.get('memo');
-          that.socket.emit('addUser',{id:that.id, type:that.type});
+
+          that.cookieId = 'interview-nickname-'+that.type+'-'+that.id
 
           var state = model.get('state');
+
           if (that.type === cnst.MEM_APPLICANT && state === 'END') {
             that.endInterview();
             return;
@@ -212,6 +222,13 @@ define([
 
             if (state === 'ESTIMATION' || state === 'END') {
               that.startEstimation(state);
+            }
+
+            var nickname = $.cookie(that.cookieId);
+            if (!nickname) {
+              $('#nickname-modal').modal('show');
+            } else {
+              that.socket.emit('addUser',{id:that.id, type:that.type, nickname:nickname });
             }
           }, 100);
         }
@@ -299,7 +316,8 @@ define([
       "keydown #chat": 'sendChat',
       "click #memo-area": "clickMemoArea",
       "click #finish-coding-btn": "finishCoding",
-      "click #finish-interview-btn": "finishInterview"
+      "click #finish-interview-btn": "finishInterview",
+      "click #save-nickname": "saveNickname"
     },
 
     // ### editQuestion
@@ -469,6 +487,14 @@ define([
     finishInterview : function() {
       var id = this.id;
       this.socket.emit('finishInterview',{id:id});
+    },
+
+    saveNickname : function() {
+      var welNickname = $('#nickname'),
+          nickname = welNickname.val();
+      $.cookie(this.cookieId, nickname);
+      this.socket.emit('addUser',{id:this.id, type:this.type, nickname:nickname });
+      $('#nickname-modal').modal('hide');
     }
   });
 

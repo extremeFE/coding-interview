@@ -6,6 +6,7 @@
     <span class="label">코딩 평가</span>
     <span class="label">코딩 인터뷰 종료</span>
   </div>
+  <div id="user-list-area"></div>
   <div class="summernote well"><%= content %></div>
   <div class="question-btn-area" style="height:30px;">
     <button class="question-edit-btn btn">편집</button>
@@ -76,4 +77,16 @@
     <div id="chat-area">
     </div>
     <input id="chat" type="text" class="input-small" />
+  </div>
+  <div id="nickname-modal" class="modal hide fade">
+    <div class="modal-header">
+      <h3>닉네임 설정</h3>
+    </div>
+    <div class="modal-body">
+      <p>닉네임은 채팅, 메모에 사용됩니다.</p>
+      <p><input id="nickname" type="text" class="span3" placeholder="닉네임을 입력하세요"></p>
+    </div>
+    <div class="modal-footer">
+      <button id="save-nickname" class="btn btn-primary">적용</button>
+    </div>
   </div>

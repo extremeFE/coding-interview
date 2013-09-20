@@ -21,7 +21,6 @@ exports.interview = function(req, res) {
     if (err) return next(err);
     var type;
     var hData = docs[0];
-console.log('admin:', cnst);
     if (hData.adminKey === key) {
       type = cnst.MEM_ADMIN;
     } else if (hData.interviewerKey === key) {

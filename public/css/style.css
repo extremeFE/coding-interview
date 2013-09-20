@@ -22,6 +22,12 @@ a {
   text-align: center;
   line-height: 2;
 }
+#user-list-area {
+  margin-bottom: 10px;
+}
+#user-list-area span {
+  margin-bottom: 5px;
+}
 .summernote.well {
   margin-bottom: 0px;
   height: 150px;

@@ -10,6 +10,7 @@ var express = require('express')
   , http = require('http')
   , path = require('path')
   , requirejs = require('requirejs')
+  , _ = require('underscore')
   , cnst = requirejs('public/js/share/const');
 
 var app = express();
@@ -39,7 +40,7 @@ app.post('/createInterview', routes.createInterview);
 
 var server = http.createServer(app),
     io = socketio.listen(server),
-    usernames = {},
+    users = {},
     typeCounts = {};
 
 io.sockets.on('connection', function (socket) {
@@ -49,14 +50,24 @@ io.sockets.on('connection', function (socket) {
     }
     var typeCount = (typeCounts[data.id][data.type]||0) + 1;
     typeCounts[data.id][data.type] = typeCount;
-    var username = cnst.MEM_NAME[data.type] + (typeCount===1 ? '' : typeCount);
     socket.id = data.id;
-    socket.username = username;
-    usernames[username] = username;
+    socket.nickname = data.nickname;
+
+    if( !users[data.id] ){
+      users[data.id] = [];
+    }
+
+    socket.index = users.length;
+    if (!_.find(users[data.id], function(user) {
+      return user.nickname === data.nickname;
+    })) {
+      users[data.id].push({type:data.type, nickname:data.nickname});
+    }
+    io.sockets.emit('updateUserList', {users:users[socket.id]});
   });
 
   socket.on('sendChat', function(data) {
-    io.sockets.emit('updateChat', {username: socket.username, chat: data.chat});
+    io.sockets.emit('updateChat', {username: socket.nickname, chat: data.chat});
   });
 
   socket.on('sendMemo', function(data) {
