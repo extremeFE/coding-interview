@@ -41,34 +41,27 @@ app.post('/sendInviteMail', routes.sendInviteMail);
 
 var server = http.createServer(app),
     io = socketio.listen(server),
-    users = {},
-    typeCounts = {};
+    users = {};
 
 io.sockets.on('connection', function (socket) {
-  socket.on('addUser', function(data) {
-    if (!typeCounts[data.id]) {
-      typeCounts[data.id] = [];
-    }
-    var typeCount = (typeCounts[data.id][data.type]||0) + 1;
-    typeCounts[data.id][data.type] = typeCount;
-    socket.id = data.id;
-    socket.nickname = data.nickname;
-
+  socket.on('checkUserList', function(data) {
     if( !users[data.id] ){
       users[data.id] = [];
     }
+    io.sockets.emit('updateUserList', {users:users[data.id]});
+  });
 
+  socket.on('addUser', function(data) {
+    socket.chatData = data;
     socket.index = users.length;
-    if (!_.find(users[data.id], function(user) {
-      return user.nickname === data.nickname;
-    })) {
+    if (!_.findWhere(users[data.id], {nickname: data.nickname})) {
       users[data.id].push({type:data.type, nickname:data.nickname});
     }
-    io.sockets.emit('updateUserList', {users:users[socket.id]});
+    io.sockets.emit('updateUserList', {users:users[data.id]});
   });
 
   socket.on('sendChat', function(data) {
-    io.sockets.emit('updateChat', {username: socket.nickname, chat: data.chat});
+    io.sockets.emit('updateChat', {nickname: socket.chatData.nickname, type: socket.chatData.type, chat: data.chat});
   });
 
   socket.on('sendMemo', function(data) {

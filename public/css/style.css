@@ -297,6 +297,9 @@ a {
   background-color: #fff;
   overflow-y: auto;
 }
+#chat-layer #chat-area > div {
+  margin-bottom: 5px;
+}
 #chat-layer #chat {
   margin-left: 5px;
   width: 225px;

@@ -54,7 +54,8 @@ define([
     // ### updateChat
     // > 채팅 내용 update
     updateChat : function(data) {
-      var welNew = $('<div><b>'+data.username + ':</b> ' + data.chat + '</div>');
+      var sNicknameHtml = _.template(userTemplate, {addClass:cnst.MEM_LABEL_CLASS[data.type], nickname:data.nickname});
+      var welNew = $('<div>' + sNicknameHtml + '&nbsp;'+ data.chat + '</div>');
       $('#chat-area').append(welNew);
 
       if ($('#chat-layer').hasClass('collapsed')) {
@@ -164,6 +165,7 @@ define([
     },
 
     updateUserList : function(data) {
+      this.users = data.users;
       var aHtml = _.map(data.users, function(user) {
         return _.template(userTemplate, {addClass:cnst.MEM_LABEL_CLASS[user.type], nickname:user.nickname+'('+cnst.MEM_NAME[user.type]+')'});
       });
@@ -224,9 +226,10 @@ define([
               that.startEstimation(state);
             }
 
+            that.socket.emit('checkUserList', {id:that.id});
             var nickname = that.nickname = $.cookie(that.cookieId);
             if (!nickname) {
-              $('#nickname-modal').modal('show');
+              $('#nickname-modal').modal({keyboard: false, show:true});
             } else {
               that.socket.emit('addUser',{id:that.id, type:that.type, nickname:nickname });
             }
@@ -317,6 +320,7 @@ define([
       "click #memo-area": "clickMemoArea",
       "click #finish-coding-btn": "finishCoding",
       "click #finish-interview-btn": "finishInterview",
+      "keyup #nickname": "checkNickname",
       "click #save-nickname": "saveNickname"
     },
 
@@ -490,9 +494,35 @@ define([
       this.socket.emit('finishInterview',{id:id});
     },
 
+    checkNickname : function() {
+      var nickname = $.trim($('#nickname').val()),
+          welSaveBtn = $('#save-nickname'),
+          welDupAlert = $('#nickname-duplicate-alert'),
+          bDuplicate = _.findWhere(this.users, {nickname: nickname})
+
+      if (!nickname || bDuplicate) {
+        welSaveBtn.addClass('disabled');
+      } else {
+        welSaveBtn.removeClass('disabled');
+      }
+
+      if (bDuplicate) {
+        welDupAlert.removeClass('hide');
+      } else {
+        welDupAlert.addClass('hide');
+      }
+    },
+
     saveNickname : function() {
-      var welNickname = $('#nickname');
-      var nickname = this.nickname = welNickname.val();
+      var welNickname = $('#nickname'),
+          nickname = welNickname.val(),
+          welSaveBtn = $('#save-nickname');
+
+      if (welSaveBtn.hasClass('disabled')) {
+        return false;
+      }
+
+      this.nickname = nickname;
       $.cookie(this.cookieId, nickname);
       this.socket.emit('addUser',{id:this.id, type:this.type, nickname:nickname });
       $('#nickname-modal').modal('hide');
