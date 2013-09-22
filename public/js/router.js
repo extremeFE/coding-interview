@@ -4,26 +4,28 @@ define([
   'underscore',
   'backbone',
   'views/interview',
-  'views/home'
-], function($, _, Backbone, InterviewView, HomeView) {
+  'views/home',
+  'views/invite'
+], function($, _, Backbone, InterviewView, HomeView, InviteView) {
 
   var AppRouter = Backbone.Router.extend({
     routes: {
       // Define some URL routes
       'interview': 'showInterview',
       'interview/?*queryString': 'showInterview',
+      'invite': 'showInvite',
+      'invite/?*queryString': 'showInvite',
 
       // Default
       '*actions': 'defaultAction'
     }
   });
 
-  var initialize = function(){
+  var initialize = function() {
 
     var app_router = new AppRouter;
 
     app_router.on('route:showInterview', function(queryString){
-      // Call render on the module we loaded in via the dependency array
       var interviewView = new InterviewView({queryStirng:queryString});
       interviewView.render();
     });
@@ -32,6 +34,11 @@ define([
       // We have no matching route, lets display the home page
       var homeView = new HomeView();
       homeView.render();
+    });
+
+    app_router.on('route:showInvite', function (queryString) {
+      var inviteView = new InviteView({queryStirng:queryString});
+      inviteView.render();
     });
 
     // Unlike the above, we don't call render on this view as it will handle

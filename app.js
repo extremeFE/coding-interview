@@ -36,7 +36,8 @@ if ('development' == app.get('env')) {
 
 app.post('/interview', routes.interview);
 app.post('/createInterview', routes.createInterview);
-//app.post('/saveQuestion', routes.saveQuestion);
+app.post('/invite', routes.invite);
+app.post('/sendInviteMail', routes.sendInviteMail);
 
 var server = http.createServer(app),
     io = socketio.listen(server),

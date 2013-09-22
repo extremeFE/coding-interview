@@ -10,12 +10,12 @@ var smtpTransport = nodemailer.createTransport("SMTP",{
   }
 });
 
-exports.sendMail = function(mail, content){
+exports.sendMail = function(mail, subject, content){
   // setup e-mail data with unicode symbols
   var mailOptions = {
-    from: "Realtime Coding Interview ✔ <realtime.coding.interview@gmail.com>", // sender address
+    from: "Coding Interview <realtime.coding.interview@gmail.com>", // sender address
     to: mail, // list of receivers
-    subject: "코딩 인터뷰 페이지를 생성했습니다.", // Subject line
+    subject: subject, // Subject line
     html: content // html body
   }
 

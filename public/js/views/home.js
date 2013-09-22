@@ -4,9 +4,9 @@ define([
   'underscore',
   'backbone',
   'text!/templates/home.html',
-  'text!/templates/created.html'
+  'text!/templates/invite.html'
 ], function($, _, Backbone, homeTemplate, createdTemplate) {
-  var InterviewView = Backbone.View.extend({
+  var Home = Backbone.View.extend({
     el: $('#container'),
     render: function() {
       this.$el.html(homeTemplate);
@@ -20,13 +20,12 @@ define([
       $.ajax({
         url: '/createInterview',
         type: "POST",
-        data:'mail='+welEmail.val()
+        data: 'mail='+welEmail.val()
       }).done(function(hResult){
-        var html = _.template(createdTemplate, {interview: hResult});
-        that.$el.html(html);
+        location.href = '/#/invite/?id='+hResult._id+'&type='+hResult.adminKey;
       });
     }
   });
 
-  return InterviewView;
+  return Home;
 });

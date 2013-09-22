@@ -157,7 +157,7 @@ define([
     endInterview : function() {
       this.$el.addClass('end');
       if (this.type === cnst.MEM_APPLICANT) {
-        this.$el.html("인터뷰가 종료되었습니다.");
+        this.$el.html('<div class="alert alert-block">인터뷰가 종료되었습니다.</div>');
       } else {
         this.changeStateView('END');
       }
@@ -224,7 +224,7 @@ define([
               that.startEstimation(state);
             }
 
-            var nickname = $.cookie(that.cookieId);
+            var nickname = that.nickname = $.cookie(that.cookieId);
             if (!nickname) {
               $('#nickname-modal').modal('show');
             } else {
@@ -252,7 +252,7 @@ define([
         addClass = 'expand';
         sMemoList += _.map(memo, function(memoData) {
           if (!memoData) { return ''}
-          return '<div class="memo-content" data-memoid="'+memoData.memoId+'"><div class="content">'+memoData.memo+'</div><div class="memo-edit-btn-area"><i class="memo-remove-btn icon-remove-sign" title="삭제"></i><i class="memo-edit-btn icon-edit" title="수정"></i></div></div>';
+          return '<div class="memo-content" data-memoid="'+memoData.memoId+'"><div>'+memoData.nickname+'</div><div class="content">'+memoData.memo+'</div><div class="memo-edit-btn-area"><i class="memo-remove-btn icon-remove-sign" title="삭제"></i><i class="memo-edit-btn icon-edit" title="수정"></i></div></div>';
         }).join('');
         sMemoList += '<div class="memo-add-btn-area"><i class="memo-add-btn icon-plus-sign-alt" title="메모 추가"></i></div>';
       }
@@ -455,6 +455,7 @@ define([
           id: id,
           row: row,
           memoData: {
+            nickname:this.nickname,
             memo: welLayer.find('textarea')[0].value,
             userId: 'test'
           }
@@ -490,8 +491,8 @@ define([
     },
 
     saveNickname : function() {
-      var welNickname = $('#nickname'),
-          nickname = welNickname.val();
+      var welNickname = $('#nickname');
+      var nickname = this.nickname = welNickname.val();
       $.cookie(this.cookieId, nickname);
       this.socket.emit('addUser',{id:this.id, type:this.type, nickname:nickname });
       $('#nickname-modal').modal('hide');

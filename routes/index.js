@@ -7,30 +7,64 @@ var cnst = requirejs('public/js/share/const');
 
 var interviewTemplate = '<h3>실시간 코딩 인터뷰 페이지 생성 완료</h3>' +
     '<p>실시간 코딩 인터뷰 페이지가 생성되었습니다.</p>' +
-    '<h5>관리자 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.adminKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.adminKey %></a></p>' +
-    '<h5>면접관 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.interviewerKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.interviewerKey %></a></p>' +
-    '<h5>지원자 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.applicantKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= interview._id %>&type=<%= interview.applicantKey %></a></p>';
+    '<h5>초대 페이지 접속 url</h5>' +
+    '<p>&nbsp; <a href="http://localhost:3000/#/invite/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://localhost:3000/#/invite/?id=<%= _id %>&type=<%= adminKey %></a></p>' +
+    '<h5>인터뷰 페이지 접속 url</h5>' +
+    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= _id %>&type=<%= adminKey %></a></p>';
+
+var inviteTemplate = '<h3><%=content %></h3>' +
+    '<h5>인터뷰 페이지 접속 url</h5>' +
+    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= id %>&type=<%= key %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= id %>&type=<%= key %></a></p>';
+
 
 exports.interview = function(req, res) {
-  var id = req.body.id;
-  var key = req.body.type;
+  var id = req.body.id,
+      key = req.body.type;
   model.find({_id:id}, function (err, docs) {
     if (err) return next(err);
-    var type;
-    var hData = docs[0];
+    var type,
+        hData = docs[0],
+        hResult = {};
     if (hData.adminKey === key) {
       type = cnst.MEM_ADMIN;
     } else if (hData.interviewerKey === key) {
       type = cnst.MEM_INTERVIEWER;
-    } else {
+    } else if (hData.applicantKey === key) {
       type = cnst.MEM_APPLICANT;
     }
 
-    res.send({ id: hData._id, content: hData.content, answer: hData.answer, memo: hData.memo, type: type, state: hData.state });
+    if (type !== undefined) {
+      hResult = { id: hData._id, content: hData.content, answer: hData.answer, memo: hData.memo, type: type, state: hData.state };
+    }
+    res.send(hResult);
   });
+};
+
+exports.invite = function(req, res) {
+  var id = req.body.id,
+      key = req.body.type;
+  model.find({_id:id}, function (err, docs) {
+    if (err) return next(err);
+    var hData = docs[0],
+        hResult = {};
+    if (hData.adminKey === key) {
+      hResult = { id: hData._id, adminKey: hData.adminKey, interviewerKey: hData.interviewerKey, applicantKey: hData.applicantKey };
+    }
+
+    res.send(hResult);
+  });
+};
+
+exports.sendInviteMail = function(req, res) {
+  var email = req.body.mail,
+      content = req.body.content,
+      hData = {
+        id : req.body.id,
+        key : req.body.key,
+        content : content
+      };
+  mail.sendMail(email, content, _.template(inviteTemplate, hData));
+  res.send();
 };
 
 var getKey = function(str) {
@@ -50,8 +84,7 @@ exports.createInterview = function(req, res) {
   };
 
   model.create(hData, function(err, hResult){
-    var content = _.template(interviewTemplate, {interview: hResult});
-    mail.sendMail(email, content)
+    mail.sendMail(email, '코딩 인터뷰 페이지를 생성했습니다.', _.template(interviewTemplate, hResult));
     res.send(hResult);
   });
 };
@@ -68,8 +101,6 @@ exports.saveQuestion = function(data, callback) {
       callback(resultState);
     });
   });
-
-
 };
 
 exports.saveAnswer = function(data, callback) {
