@@ -13,7 +13,8 @@ define([
   'summernote'
 ], function($, _, Backbone, io, ace, cnst, interviewCollection, interviewTemplate, memoTemplate) {
   var addMemoTemplate = '<div class="memo-add"><textarea></textarea><div class="memo-add-btn-area"><i class="memo-cancel icon-ban-circle" title="취소"></i><i class="memo-save icon-save" title="저장"></i></div></div>';
-  var userTemplate = ' <span class="badge <%= addClass %>"><%= nickname %></span>'
+  var userTemplate = ' <span class="badge <%= addClass %>"><%= nickname %></span>';
+  var sEditAreaHtml = '<div class="memo-edit-btn-area"><i class="memo-remove-btn icon-remove-sign" title="삭제"></i><i class="memo-edit-btn icon-edit" title="수정"></i></div>';
   var LINE_HEIGHT = 16;
   var PREFIX_ID = 'memo-layer-';
   var InterviewView = Backbone.View.extend({
@@ -220,19 +221,23 @@ define([
 
           setTimeout(function() {
             that.memo.length = that.aceEditor.getLastVisibleRow() + 1;
-            that.renderMemo(that.memo);
 
             if (state === 'ESTIMATION' || state === 'END') {
               that.startEstimation(state);
             }
 
             that.socket.emit('checkUserList', {id:that.id});
-            var nickname = that.nickname = $.cookie(that.cookieId);
+            var nickname = $.cookie(that.cookieId);
             if (!nickname) {
-              $('#nickname-modal').modal({keyboard: false, show:true});
+              $('#nickname-modal').modal({keyboard: false, show:true}).on('hidden', function() {
+                that.renderMemo(that.memo);
+              });
             } else {
+              that.nickname = nickname;
+              that.renderMemo(that.memo);
               that.socket.emit('addUser',{id:that.id, type:that.type, nickname:nickname });
             }
+
           }, 100);
         }
       });
@@ -253,9 +258,18 @@ define([
       if (memo && memo.length > 0) {
         view = count = memo.length;
         addClass = 'expand';
+        var that = this;
         sMemoList += _.map(memo, function(memoData) {
           if (!memoData) { return ''}
-          return '<div class="memo-content" data-memoid="'+memoData.memoId+'"><div>'+memoData.nickname+'</div><div class="content">'+memoData.memo+'</div><div class="memo-edit-btn-area"><i class="memo-remove-btn icon-remove-sign" title="삭제"></i><i class="memo-edit-btn icon-edit" title="수정"></i></div></div>';
+          var sNicknameHtml = '',
+              sEditHtml = '';
+          if (that.type === memoData.type && that.nickname === memoData.nickname) {
+            sEditHtml = sEditAreaHtml;
+          } else {
+            sNicknameHtml = _.template(userTemplate, {addClass:cnst.MEM_LABEL_CLASS[memoData.type], nickname:memoData.nickname});
+          }
+
+          return '<div class="memo-content" data-memoid="'+memoData.memoId+'"><div>'+sNicknameHtml+'</div><div class="content">'+memoData.memo+'</div>'+sEditHtml+'</div>';
         }).join('');
         sMemoList += '<div class="memo-add-btn-area"><i class="memo-add-btn icon-plus-sign-alt" title="메모 추가"></i></div>';
       }
@@ -460,6 +474,7 @@ define([
           row: row,
           memoData: {
             nickname:this.nickname,
+            type:this.type,
             memo: welLayer.find('textarea')[0].value,
             userId: 'test'
           }
@@ -521,7 +536,6 @@ define([
       if (welSaveBtn.hasClass('disabled')) {
         return false;
       }
-
       this.nickname = nickname;
       $.cookie(this.cookieId, nickname);
       this.socket.emit('addUser',{id:this.id, type:this.type, nickname:nickname });
