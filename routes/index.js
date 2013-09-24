@@ -16,7 +16,7 @@ var inviteTemplate = '<h3><%=content %></h3>' +
     '<h5>인터뷰 페이지 접속 url</h5>' +
     '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= id %>&type=<%= key %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= id %>&type=<%= key %></a></p>';
 
-
+// 코딩 인터뷰 페이지
 exports.interview = function(req, res) {
   var id = req.body.id,
       key = req.body.type;
@@ -40,6 +40,7 @@ exports.interview = function(req, res) {
   });
 };
 
+// 초대 페이지
 exports.invite = function(req, res) {
   var id = req.body.id,
       key = req.body.type;
@@ -55,6 +56,7 @@ exports.invite = function(req, res) {
   });
 };
 
+// 초대 메일 발송
 exports.sendInviteMail = function(req, res) {
   var email = req.body.mail,
       content = req.body.content,
@@ -67,12 +69,14 @@ exports.sendInviteMail = function(req, res) {
   res.send();
 };
 
+// 키 생성
 var getKey = function(str) {
   var sha1 = crypto.createHash("sha1");
   sha1.update(str, "utf8");
   return sha1.digest("hex");
 };
 
+// 인터뷰 페이지 생성
 exports.createInterview = function(req, res) {
   var email = req.body.mail;
   var time = new Date().getTime();
@@ -89,6 +93,7 @@ exports.createInterview = function(req, res) {
   });
 };
 
+// 문제 저장
 exports.saveQuestion = function(data, callback) {
   var resultState,
       updateData  = {content:data.content};
@@ -103,6 +108,7 @@ exports.saveQuestion = function(data, callback) {
   });
 };
 
+// 답변 저장
 exports.saveAnswer = function(data, callback) {
   var id = data.id;
   var answer = data.answer;
@@ -111,27 +117,28 @@ exports.saveAnswer = function(data, callback) {
   });
 };
 
+// 편집 중에는 메모 추가가 불가하므로 일단 해당 코드를 주석 처리함
+//exports.addLine = function(data, callback) {
+//  model.find({_id:data.id}, function (err, docs) {
+//    var memo = docs[0].memo || [];
+//    memo.splice(data.startRow, 0, undefined);
+//    model.update({_id:data.id}, {memo:memo}, null, function(err){
+//      callback('addedLine');
+//    });
+//  });
+//};
+//
+//exports.removeLines = function(data, callback) {
+//  model.find({_id:data.id}, function (err, docs) {
+//    var memo = docs[0].memo || [];
+//    memo.splice(data.startRow, data.lineLen);
+//    model.update({_id:data.id}, {memo:memo}, null, function(err){
+//      callback('removedLines');
+//    });
+//  });
+//};
 
-exports.addLine = function(data, callback) {
-  model.find({_id:data.id}, function (err, docs) {
-    var memo = docs[0].memo || [];
-    memo.splice(data.startRow, 0, undefined);
-    model.update({_id:data.id}, {memo:memo}, null, function(err){
-      callback('addedLine');
-    });
-  });
-};
-
-exports.removeLines = function(data, callback) {
-  model.find({_id:data.id}, function (err, docs) {
-    var memo = docs[0].memo || [];
-    memo.splice(data.startRow, data.lineLen);
-    model.update({_id:data.id}, {memo:memo}, null, function(err){
-      callback('removedLines');
-    });
-  });
-};
-
+// 메모 추가, 수정, 삭제
 exports.updateMemo = function(data, callback) {
   model.find({_id:data.id}, function (err, docs) {
     var memo = docs[0].memo || [];
@@ -173,6 +180,7 @@ exports.updateMemo = function(data, callback) {
   });
 };
 
+// 인터뷰 상태 변경
 exports.changeInterviewState = function(id, state, callback) {
   model.update({_id:id}, {state:state}, null, function(err){
     callback();

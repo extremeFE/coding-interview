@@ -10,9 +10,13 @@ define([
     render: function() {
       this.$el.html(homeTemplate);
     },
+
     events: {
       "click #create": "createInterview"
     },
+
+    // ### createInterview
+    // > 인터뷰 페이지 생성
     createInterview : function() {
       var welEmail = $('#email');
       $.ajax({
