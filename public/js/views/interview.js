@@ -36,6 +36,10 @@ define([
     // ### updateQuestion
     // > 관리자가 문제를 변경하면 문제영역 내용 변경
     updateQuestion : function(data) {
+      if (this.id !== data.id) {
+        return;
+      }
+
       $('.summernote').html(data.sHTML);
       if (data.state) {
         this.changeStateView(data.state);
@@ -45,6 +49,10 @@ define([
     // ### updateAnswer
     // > 지원자가 코딩을 하면 관리자와 면접관의 코딩 영역 내용 변경
     updateAnswer : function(data) {
+      if (this.id !== data.id) {
+        return;
+      }
+
       if (this.type === cnst.MEM_APPLICANT) {
         return;
       }
@@ -55,6 +63,10 @@ define([
     // ### updateChat
     // > 채팅 내용 update
     updateChat : function(data) {
+      if (this.id !== data.id) {
+        return;
+      }
+
       var sNicknameHtml = _.template(userTemplate, {addClass:cnst.MEM_LABEL_CLASS[data.type], nickname:data.nickname});
       var welNew = $('<div>' + sNicknameHtml + '&nbsp;'+ data.chat + '</div>');
       $('#chat-area').append(welNew);
@@ -122,12 +134,17 @@ define([
 
     // ### updateMemo
     updateMemo : function(data) {
+      if (this.id !== data.id) {
+        return;
+      }
+
       var welLayer = $('#'+PREFIX_ID+data.row);
       var html = this.getMemoLayerHtml(data.memo, data.row);
       var welTmp = $(html);
       welLayer.html(welTmp[0].innerHTML);
       welLayer.attr('data-count', welTmp.attr('data-count'));
       if (data.memo.length > 0) {
+        welLayer.addClass('expand');
         welLayer.removeClass('insert');
       } else  {
         welLayer.removeClass('expand');
@@ -136,7 +153,11 @@ define([
     },
 
     // 평가 시작
-    startEstimation : function(state) {
+    startEstimation : function(data, state) {
+      if (this.id !== data.id) {
+        return;
+      }
+
       this.$el.addClass('estimation');
       state = state || 'ESTIMATION';
 
@@ -155,17 +176,38 @@ define([
       this.aceEditor.setReadOnly(true);
     },
 
+    renderEndMessage : function() {
+      this.$el.html('<div class="alert alert-block">코딩 인터뷰가 종료되었습니다.</div>');
+    },
+
     // 인터뷰 종료
-    endInterview : function() {
+    endInterview : function(data) {
+      if (this.id !== data.id) {
+        return;
+      }
+
       this.$el.addClass('end');
-      if (this.type === cnst.MEM_APPLICANT) {
-        this.$el.html('<div class="alert alert-block">인터뷰가 종료되었습니다.</div>');
-      } else {
+      if (this.type !== cnst.MEM_APPLICANT) {
         this.changeStateView('END');
+        return;
+      }
+
+      var welEndModal = $('#end-interview-modal');
+      if (welEndModal[0]) {
+        var that = this;
+        $('#end-interview-modal').modal({keyboard: true, show:true}).on('hidden', function() {
+          that.renderEndMessage();
+        });
+      } else {
+        this.renderEndMessage();
       }
     },
 
     updateUserList : function(data) {
+      if (this.id !== data.id) {
+        return;
+      }
+
       this.users = data.users;
       var aHtml = _.map(data.users, function(user) {
         return _.template(userTemplate, {addClass:cnst.MEM_LABEL_CLASS[user.type], nickname:user.nickname+'('+cnst.MEM_NAME[user.type]+')'});
@@ -190,7 +232,7 @@ define([
           var state = model.get('state');
 
           if (that.type === cnst.MEM_APPLICANT && state === 'END') {
-            that.endInterview();
+            that.endInterview({id:that.id});
             return;
           }
 
@@ -223,7 +265,7 @@ define([
             that.memo.length = that.aceEditor.getLastVisibleRow() + 1;
 
             if (state === 'ESTIMATION' || state === 'END') {
-              that.startEstimation(state);
+              that.startEstimation({id:that.id}, state);
             }
 
             that.socket.emit('checkUserList', {id:that.id});
@@ -400,10 +442,8 @@ define([
       var start = this.range.start,
           end = this.range.end,
           view = (start.row+1)+':'+start.column+'-'+(end.row+1)+':'+end.column,
-          chat = _.template('<span class="range-link" data-start-row="<%=start.row %>" data-start-column="<%=start.column %>" data-end-row="<%=end.row %>" data-end-column="<%=end.column %>"><%=view%></span>',
-          {start: start, end:end, view:view});
-
-      this.socket.emit('sendChat',{chat:chat});
+          chat = _.template('<span class="range-link" data-start-row="<%=start.row %>" data-start-column="<%=start.column %>" data-end-row="<%=end.row %>" data-end-column="<%=end.column %>"><%=view%></span>', {start: start, end:end, view:view});
+      this.socket.emit('sendChat',{id:this.id, chat:chat});
     },
 
     // ### selectRangeLink
@@ -427,7 +467,7 @@ define([
         return;
       }
 
-      this.socket.emit('sendChat',{chat:value});
+      this.socket.emit('sendChat',{id:this.id, chat:value});
       $('#chat').val('');
     },
 

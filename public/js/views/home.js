@@ -3,9 +3,8 @@ define([
   'jquery',
   'underscore',
   'backbone',
-  'text!/templates/home.html',
-  'text!/templates/invite.html'
-], function($, _, Backbone, homeTemplate, createdTemplate) {
+  'text!/templates/home.html'
+], function($, _, Backbone, homeTemplate) {
   var Home = Backbone.View.extend({
     el: $('#container'),
     render: function() {
@@ -16,7 +15,6 @@ define([
     },
     createInterview : function() {
       var welEmail = $('#email');
-      var that = this;
       $.ajax({
         url: '/createInterview',
         type: "POST",

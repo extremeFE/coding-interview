@@ -48,7 +48,7 @@ io.sockets.on('connection', function (socket) {
     if( !users[data.id] ){
       users[data.id] = [];
     }
-    io.sockets.emit('updateUserList', {users:users[data.id]});
+    io.sockets.emit('updateUserList', {id:data.id, users:users[data.id]});
   });
 
   socket.on('addUser', function(data) {
@@ -57,11 +57,12 @@ io.sockets.on('connection', function (socket) {
     if (!_.findWhere(users[data.id], {nickname: data.nickname})) {
       users[data.id].push({type:data.type, nickname:data.nickname});
     }
-    io.sockets.emit('updateUserList', {users:users[data.id]});
+    io.sockets.emit('updateUserList', {id:data.id, users:users[data.id]});
   });
 
   socket.on('sendChat', function(data) {
-    io.sockets.emit('updateChat', {nickname: socket.chatData.nickname, type: socket.chatData.type, chat: data.chat});
+    //id별로 보낼 수 있게 처리 필요
+    io.sockets.emit('updateChat', {id:data.id, nickname: socket.chatData.nickname, type: socket.chatData.type, chat: data.chat});
   });
 
   socket.on('sendMemo', function(data) {
@@ -72,7 +73,7 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('saveQuestion', function(data) {
     routes.saveQuestion(data, function(state) {
-      io.sockets.emit('updateQuestion', {content:data.content, state: state});
+      io.sockets.emit('updateQuestion', {id:data.id, content:data.content, state: state});
     });
   });
 
@@ -91,13 +92,13 @@ io.sockets.on('connection', function (socket) {
 
   socket.on('finishCoding', function(data) {
     routes.changeInterviewState(data.id, 'ESTIMATION', function() {
-      io.sockets.emit('startEstimation');
+      io.sockets.emit('startEstimation', {id:data.id});
     });
   });
 
   socket.on('finishInterview', function(data) {
     routes.changeInterviewState(data.id, 'END', function() {
-      io.sockets.emit('endInterview');
+      io.sockets.emit('endInterview', {id:data.id});
     });
   });
 });

@@ -140,7 +140,7 @@ exports.updateMemo = function(data, callback) {
       if (!memo[data.row]) memo[data.row] = [];
       data.memoData.memoId = 'memo-' + (new Date().getTime());
       memo[data.row].push(data.memoData);
-      result = {row:data.row, updateType:data.updateType, memo:memo[data.row]};
+      result = {id:data.id, row:data.row, updateType:data.updateType, memo:memo[data.row]};
     } else {
       var aMemoData = memo[data.row];
       if (!aMemoData) {
@@ -164,7 +164,7 @@ exports.updateMemo = function(data, callback) {
       } else if (data.updateType === 'delete') {
         memo[data.row].splice(index, 1);
       }
-      result = {row:data.row, updateType:data.updateType, memo:memo[data.row]};
+      result = {id:data.id, row:data.row, updateType:data.updateType, memo:memo[data.row]};
     }
 
     model.update({_id:data.id}, {memo:memo}, null, function(err){
