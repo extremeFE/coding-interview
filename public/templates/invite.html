@@ -1,0 +1,27 @@
+<h3>관리자 인터뷰 접속 url</h3>
+<p>아래의 url로 접근하면 관리자 권한으로 인터뷰에 참여할 수 있습니다.</p>
+<p>&nbsp; <a href="/#/interview/?id=<%= interview.id %>&type=<%= interview.adminKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= interview.id %>&type=<%= interview.adminKey %></a></p>
+<h3>지원자, 면접관 초대</h3>
+<p>지원자와 면접관에게 초대 메일을 보낼 수 있습니다.</p>
+<h5>면접관 초대</h5>
+<p>
+  <input id="interviewer-email" type="text" class="input-small" placeholder="Email을 입력하세요." style="width:200px;margin-bottom:0px;">
+  <button id="invite-interviewer" type="button" class="btn">메일 발송</button>
+</p>
+<h5>지원자 초대</h5>
+<p>
+  <input id="applicant-email" type="text" class="input-small" placeholder="Email을 입력하세요." style="width:200px;margin-bottom:0px;">
+  <button id="invite-applicant" type="button" class="btn">메일 발송</button>
+</p>
+<div id="send-modal" class="modal hide fade">
+  <div class="modal-header">
+    <button type="button" class="close" data-dismiss="modal" aria-hidden="true">×</button>
+    <h3>메일 발송 완료</h3>
+  </div>
+  <div class="modal-body">
+    <p>초대 메일을 발송했습니다.</p>
+  </div>
+  <div class="modal-footer">
+    <button class="btn btn-primary" data-dismiss="modal">닫기</button>
+  </div>
+</div>
