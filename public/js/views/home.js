@@ -1,4 +1,4 @@
-// Filename: views/interview
+// Filename: views/home
 define([
   'jquery',
   'underscore',
