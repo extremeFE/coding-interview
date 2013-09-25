@@ -66,7 +66,7 @@ io.sockets.on('connection', function (socket) {
 
   // 메모 저장
   socket.on('sendMemo', function(data) {
-    routes.updateMemo(data, function(result){
+    routes.updateMemo(data, function(result) {
       io.sockets.emit('updateMemo', result);
     });
   });
@@ -83,13 +83,13 @@ io.sockets.on('connection', function (socket) {
     routes.saveAnswer(data, function(){
       io.sockets.emit('updateAnswer', data);
     });
-// 편집 중 메모 기능이 제외되어 일단 주석 처리 함
-//    if (!data.memoData) { return; }
-//
-//    data.memoData.id = data.id;
-//    routes[data.memoData.updateType](data.memoData, function(emitType){
-//      io.sockets.emit(emitType, data.memoData);
-//    });
+
+    if (!data.memoData) { return; }
+
+    data.memoData.id = data.id;
+    routes[data.memoData.updateType](data.memoData, function(emitType){
+      io.sockets.emit(emitType, data.memoData);
+    });
   });
 
   // 코딩 제출

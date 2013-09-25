@@ -25,8 +25,8 @@ define([
       this.socket.on('updateQuestion', _.bind(this.updateQuestion, this));
       this.socket.on('updateAnswer', _.bind(this.updateAnswer, this));
       this.socket.on('updateChat', _.bind(this.updateChat, this));
-//      this.socket.on('addedLine', _.bind(this.addedLine, this));
-//      this.socket.on('removedLines', _.bind(this.removedLines, this));
+      this.socket.on('addedLine', _.bind(this.addedLine, this));
+      this.socket.on('removedLines', _.bind(this.removedLines, this));
       this.socket.on('updateMemo', _.bind(this.updateMemo, this));
       this.socket.on('startEstimation', _.bind(this.startEstimation, this));
       this.socket.on('endInterview', _.bind(this.endInterview, this));
@@ -40,7 +40,7 @@ define([
         return;
       }
 
-      $('.summernote').html(data.sHTML);
+      $('.summernote').html(data.content);
       if (data.state) {
         this.changeStateView(data.state);
       }
@@ -86,51 +86,51 @@ define([
       welLayer.removeClass('select');
       welLayer.css('top',row*LINE_HEIGHT);
     },
-// 실시간 편집시에는 메모 기능을 제공하지 않으므로 일단 주석 처리함
-//    // ### addedLine
-//    addedLine : function(data) {
-//      // 기존 메모 레이어 라인 증가
-//      var aAddLineLayer = _.filter($('.memo-layer'), function(elLayer) {
-//        return data.startRow <= parseInt($(elLayer).attr('data-row'));
-//      });
-//
-//      _.each(aAddLineLayer, function(elLayer) {
-//        var welLayer = $(elLayer);
-//        var row = parseInt(welLayer.attr('data-row')) + 1;
-//        this.updateLayerInfo(welLayer, row);
-//      }, this);
-//
-//      // 신규 메모 레이어 추가
-//      $('#memo-layer-area').html($('#memo-layer-area').html()+this.getMemoLayerHtml([], data.startRow));
-//      this.viewSelectionRange();
-//    },
-//
-//    // ### removedLines
-//    removedLines : function(data) {
-//      var aMemoLayer = $('.memo-layer'),
-//          startRow = data.startRow,
-//          endRow = data.startRow+data.lineLen;
-//
-//      // 삭제 라인 메모 제거
-//      var aRemoveLineLayer = _.filter(aMemoLayer, function(elLayer) {
-//        var row = parseInt($(elLayer).attr('data-row'));
-//        return startRow <= row && endRow >= row;
-//      });
-//      _.each(aRemoveLineLayer, function(elLayer) {
-//        $(elLayer).remove();
-//      });
-//
-//      // 삭제 라인 하위 메모 레이어 라인 변경
-//      var aMinusLineLayer = _.filter(aMemoLayer, function(elLayer) {
-//        var row = parseInt($(elLayer).attr('data-row'));
-//        return endRow+1 <= row;
-//      });
-//      _.each(aMinusLineLayer, function(elLayer) {
-//        var welLayer = $(elLayer),
-//            row = parseInt(welLayer.attr('data-row'))-data.lineLen;
-//        this.updateLayerInfo(welLayer, row);
-//      }, this);
-//    },
+
+    // ### addedLine
+    addedLine : function(data) {
+      // 기존 메모 레이어 라인 증가
+      var aAddLineLayer = _.filter($('.memo-layer'), function(elLayer) {
+        return data.startRow <= parseInt($(elLayer).attr('data-row'));
+      });
+
+      _.each(aAddLineLayer, function(elLayer) {
+        var welLayer = $(elLayer);
+        var row = parseInt(welLayer.attr('data-row')) + 1;
+        this.updateLayerInfo(welLayer, row);
+      }, this);
+
+      // 신규 메모 레이어 추가
+      $('#memo-layer-area').html($('#memo-layer-area').html()+this.getMemoLayerHtml([], data.startRow));
+      this.viewSelectionRange();
+    },
+
+    // ### removedLines
+    removedLines : function(data) {
+      var aMemoLayer = $('.memo-layer'),
+          startRow = data.startRow,
+          endRow = data.startRow+data.lineLen;
+
+      // 삭제 라인 메모 제거
+      var aRemoveLineLayer = _.filter(aMemoLayer, function(elLayer) {
+        var row = parseInt($(elLayer).attr('data-row'));
+        return startRow <= row && endRow >= row;
+      });
+      _.each(aRemoveLineLayer, function(elLayer) {
+        $(elLayer).remove();
+      });
+
+      // 삭제 라인 하위 메모 레이어 라인 변경
+      var aMinusLineLayer = _.filter(aMemoLayer, function(elLayer) {
+        var row = parseInt($(elLayer).attr('data-row'));
+        return endRow+1 <= row;
+      });
+      _.each(aMinusLineLayer, function(elLayer) {
+        var welLayer = $(elLayer),
+            row = parseInt(welLayer.attr('data-row'))-data.lineLen;
+        this.updateLayerInfo(welLayer, row);
+      }, this);
+    },
 
     // ### updateMemo
     // > 메모 내용 갱신
@@ -217,7 +217,7 @@ define([
 
       this.users = data.users;
       var aHtml = _.map(data.users, function(user) {
-        return _.template(userTemplate, {addClass:cnst.MEM_LABEL_CLASS[user.type], nickname:user.nickname+'('+cnst.MEM_NAME[user.type]+')'});
+        return _.template(userTemplate, {addClass:cnst.MEM_LABEL_CLASS[user.type], nickname:user.nickname+' ('+cnst.MEM_NAME[user.type]+')'});
       });
       $('#user-list-area').html(aHtml.join(''));
     },
@@ -345,22 +345,21 @@ define([
     // ### changeAnswer
     // > 문제 풀이 코딩
     changeAnswer : function(e) {
-// 편집 중 메모 기능이 제외되어 일단 주석 처리 함
-//      var memoData;
-//      if (e.data.action === 'insertText' && e.data.text === '\n') {
-//        $('#'+PREFIX_ID+e.data.range.start.row-1).removeClass('select');
-//        memoData = {startRow: e.data.range.start.row, updateType:'addLine'};
-//      } else if (e.data.action === 'removeText' && e.data.text === '\n') {
-//        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: 1};
-//      } else if (e.data.action === 'removeLines') {
-//        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: e.data.lines.length};
-//      }
+      var memoData;
+      if (e.data.action === 'insertText' && e.data.text === '\n') {
+        $('#'+PREFIX_ID+e.data.range.start.row-1).removeClass('select');
+        memoData = {startRow: e.data.range.start.row, updateType:'addLine'};
+      } else if (e.data.action === 'removeText' && e.data.text === '\n') {
+        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: 1};
+      } else if (e.data.action === 'removeLines') {
+        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: e.data.lines.length};
+      }
       var data = {
         id : this.id,
         type : this.type,
         answer : this.aceEditor.getValue(),
-        cursorPos : this.aceEditor.getCursorPosition()
-//        memoData : memoData
+        cursorPos : this.aceEditor.getCursorPosition(),
+        memoData : memoData
       };
 
       this.socket.emit('saveAnswer',data);

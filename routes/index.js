@@ -117,26 +117,25 @@ exports.saveAnswer = function(data, callback) {
   });
 };
 
-// 편집 중에는 메모 추가가 불가하므로 일단 해당 코드를 주석 처리함
-//exports.addLine = function(data, callback) {
-//  model.find({_id:data.id}, function (err, docs) {
-//    var memo = docs[0].memo || [];
-//    memo.splice(data.startRow, 0, undefined);
-//    model.update({_id:data.id}, {memo:memo}, null, function(err){
-//      callback('addedLine');
-//    });
-//  });
-//};
-//
-//exports.removeLines = function(data, callback) {
-//  model.find({_id:data.id}, function (err, docs) {
-//    var memo = docs[0].memo || [];
-//    memo.splice(data.startRow, data.lineLen);
-//    model.update({_id:data.id}, {memo:memo}, null, function(err){
-//      callback('removedLines');
-//    });
-//  });
-//};
+exports.addLine = function(data, callback) {
+  model.find({_id:data.id}, function (err, docs) {
+    var memo = docs[0].memo || [];
+    memo.splice(data.startRow, 0, undefined);
+    model.update({_id:data.id}, {memo:memo}, null, function(err){
+      callback('addedLine');
+    });
+  });
+};
+
+exports.removeLines = function(data, callback) {
+  model.find({_id:data.id}, function (err, docs) {
+    var memo = docs[0].memo || [];
+    memo.splice(data.startRow, data.lineLen);
+    model.update({_id:data.id}, {memo:memo}, null, function(err){
+      callback('removedLines');
+    });
+  });
+};
 
 // 메모 추가, 수정, 삭제
 exports.updateMemo = function(data, callback) {
