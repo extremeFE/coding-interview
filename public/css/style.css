@@ -255,7 +255,7 @@ a {
   bottom: 10px;
   height: 360px;
   width: 250px;
-  border: 1px solid #555;
+  border: 1px solid #aaa;
   background-color: #fff;
   -webkit-border-radius: 3px;
   -moz-border-radius: 3px;
@@ -291,7 +291,7 @@ a {
   -moz-box-sizing: border-box;
   -webkit-box-sizing: border-box;
   box-sizing: border-box;
-  height: 295px;
+  height: 290px;
   width: 248px;
   padding: 5px;
   background-color: #fff;
@@ -302,7 +302,7 @@ a {
 }
 #chat-layer #chat {
   margin-left: 5px;
-  width: 225px;
+  width: 223px;
 }
 #chat-layer.collapsed {
   cursor: pointer;

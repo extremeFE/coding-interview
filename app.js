@@ -9,7 +9,6 @@ var express = require('express')
   , mail = require('./routes/mail')
   , http = require('http')
   , path = require('path')
-  , requirejs = require('requirejs')
   , _ = require('underscore');
 
 var app = express();
@@ -84,13 +83,13 @@ io.sockets.on('connection', function (socket) {
     routes.saveAnswer(data, function(){
       io.sockets.emit('updateAnswer', data);
     });
-
-    if (!data.memoData) { return; }
-
-    data.memoData.id = data.id;
-    routes[data.memoData.updateType](data.memoData, function(emitType){
-      io.sockets.emit(emitType, data.memoData);
-    });
+// 편집 중 메모 기능이 제외되어 일단 주석 처리 함
+//    if (!data.memoData) { return; }
+//
+//    data.memoData.id = data.id;
+//    routes[data.memoData.updateType](data.memoData, function(emitType){
+//      io.sockets.emit(emitType, data.memoData);
+//    });
   });
 
   // 코딩 제출
