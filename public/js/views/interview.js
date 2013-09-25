@@ -21,7 +21,7 @@ define([
     el: $('#container'),
     initialize: function (data) {
       this.queryStirng = data.queryStirng;
-      this.socket = io.connect('http://localhost');
+      this.socket = io.connect('http://'+window.location.host);
       this.socket.on('updateQuestion', _.bind(this.updateQuestion, this));
       this.socket.on('updateAnswer', _.bind(this.updateAnswer, this));
       this.socket.on('updateChat', _.bind(this.updateChat, this));
@@ -345,21 +345,22 @@ define([
     // ### changeAnswer
     // > 문제 풀이 코딩
     changeAnswer : function(e) {
-      var memoData;
-      if (e.data.action === 'insertText' && e.data.text === '\n') {
-        $('#'+PREFIX_ID+e.data.range.start.row-1).removeClass('select');
-        memoData = {startRow: e.data.range.start.row, updateType:'addLine'};
-      } else if (e.data.action === 'removeText' && e.data.text === '\n') {
-        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: 1};
-      } else if (e.data.action === 'removeLines') {
-        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: e.data.lines.length};
-      }
+// 편집 중 메모 기능이 제외되어 일단 주석 처리 함
+//      var memoData;
+//      if (e.data.action === 'insertText' && e.data.text === '\n') {
+//        $('#'+PREFIX_ID+e.data.range.start.row-1).removeClass('select');
+//        memoData = {startRow: e.data.range.start.row, updateType:'addLine'};
+//      } else if (e.data.action === 'removeText' && e.data.text === '\n') {
+//        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: 1};
+//      } else if (e.data.action === 'removeLines') {
+//        memoData = {startRow: e.data.range.start.row+1, updateType:'removeLines', lineLen: e.data.lines.length};
+//      }
       var data = {
         id : this.id,
         type : this.type,
         answer : this.aceEditor.getValue(),
-        cursorPos : this.aceEditor.getCursorPosition(),
-        memoData : memoData
+        cursorPos : this.aceEditor.getCursorPosition()
+//        memoData : memoData
       };
 
       this.socket.emit('saveAnswer',data);
