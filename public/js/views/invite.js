@@ -64,7 +64,7 @@ define([
       $.ajax({
         url: '/sendInviteMail',
         type: "POST",
-        data: 'id='+this.id+'&mail='+mail+'&key='+key+'&content='+content
+        data: 'id='+this.id+'&mail='+mail+'&locationHost='+window.location.host+'&key='+key+'&content='+content
       }).done(function(hResult){
         welEmail.val('');
         $('#send-modal').modal('show');

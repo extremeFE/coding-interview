@@ -22,7 +22,7 @@ define([
       $.ajax({
         url: '/createInterview',
         type: "POST",
-        data: 'mail='+welEmail.val()
+        data: 'locationHost='+window.location.host+'&mail='+welEmail.val()
       }).done(function(hResult){
         location.href = '/#/invite/?id='+hResult._id+'&type='+hResult.adminKey;
       });

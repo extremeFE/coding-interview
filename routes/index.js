@@ -8,13 +8,13 @@ var cnst = requirejs('public/js/share/const');
 var interviewTemplate = '<h3>실시간 코딩 인터뷰 페이지 생성 완료</h3>' +
     '<p>실시간 코딩 인터뷰 페이지가 생성되었습니다.</p>' +
     '<h5>초대 페이지 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://localhost:3000/#/invite/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://localhost:3000/#/invite/?id=<%= _id %>&type=<%= adminKey %></a></p>' +
+    '<p>&nbsp; <a href="http://<%= locationHost %>/#/invite/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://<%= locationHost %>/#/invite/?id=<%= _id %>&type=<%= adminKey %></a></p>' +
     '<h5>인터뷰 페이지 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= _id %>&type=<%= adminKey %></a></p>';
+    '<p>&nbsp; <a href="http://<%= locationHost %>/#/interview/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://<%= locationHost %>/#/interview/?id=<%= _id %>&type=<%= adminKey %></a></p>';
 
 var inviteTemplate = '<h3><%=content %></h3>' +
     '<h5>인터뷰 페이지 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://localhost:3000/#/interview/?id=<%= id %>&type=<%= key %>" trget="_blank">http://localhost:3000/#/interview/?id=<%= id %>&type=<%= key %></a></p>';
+    '<p>&nbsp; <a href="http://<%= locationHost %>/#/interview/?id=<%= id %>&type=<%= key %>" trget="_blank">http://<%= locationHost %>/#/interview/?id=<%= id %>&type=<%= key %></a></p>';
 
 // 코딩 인터뷰 페이지
 exports.interview = function(req, res) {
@@ -62,6 +62,7 @@ exports.sendInviteMail = function(req, res) {
       content = req.body.content,
       hData = {
         id : req.body.id,
+        locationHost:req.body.locationHost,
         key : req.body.key,
         content : content
       };
@@ -78,16 +79,18 @@ var getKey = function(str) {
 
 // 인터뷰 페이지 생성
 exports.createInterview = function(req, res) {
-  var email = req.body.mail;
-  var time = new Date().getTime();
-  var hData = {
-    state: 'START',
-    adminKey: getKey(time+'admin'),
-    interviewerKey: getKey(time+'interviewer'),
-    applicantKey: getKey(time+'applicant')
-  };
+  var email = req.body.mail,
+      time = (new Date()).getTime(),
+      locationHost = req.body.locationHost,
+      hData = {
+        state: 'START',
+        adminKey: getKey(time+'admin'),
+        interviewerKey: getKey(time+'interviewer'),
+        applicantKey: getKey(time+'applicant')
+      };
 
   model.create(hData, function(err, hResult){
+    hResult.locationHost = locationHost;
     mail.sendMail(email, '코딩 인터뷰 페이지를 생성했습니다.', _.template(interviewTemplate, hResult));
     res.send(hResult);
   });
@@ -110,8 +113,8 @@ exports.saveQuestion = function(data, callback) {
 
 // 답변 저장
 exports.saveAnswer = function(data, callback) {
-  var id = data.id;
-  var answer = data.answer;
+  var id = data.id,
+      answer = data.answer;
   model.update({_id:id}, {answer:answer}, null, function(err){
     callback();
   });
