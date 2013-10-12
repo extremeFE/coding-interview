@@ -1,10 +1,10 @@
-Realtime Coding Interview
+Remote Coding Interview
 =========================
 
 * version: 0.0.1
 
 # 목적
-* 실시간 코딩 인터뷰 서비스 구현
+* 원격 코딩 인터뷰 서비스 구현
 
 # 지원 브라우저, 의존성
 * Browser : Chrome, Safari, Firefox, IE10+
