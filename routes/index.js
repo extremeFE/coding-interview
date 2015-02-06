@@ -5,16 +5,16 @@ var _ = require("underscore");
 var requirejs = require('requirejs');
 var cnst = requirejs('public/js/share/const');
 
-var interviewTemplate = '<h3>실시간 코딩 인터뷰 페이지 생성 완료</h3>' +
+var interviewTemplate = _.template('<h3>실시간 코딩 인터뷰 페이지 생성 완료</h3>' +
     '<p>실시간 코딩 인터뷰 페이지가 생성되었습니다.</p>' +
     '<h5>초대 페이지 접속 url</h5>' +
     '<p>&nbsp; <a href="http://<%= locationHost %>/#/invite/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://<%= locationHost %>/#/invite/?id=<%= _id %>&type=<%= adminKey %></a></p>' +
     '<h5>인터뷰 페이지 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://<%= locationHost %>/#/interview/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://<%= locationHost %>/#/interview/?id=<%= _id %>&type=<%= adminKey %></a></p>';
+    '<p>&nbsp; <a href="http://<%= locationHost %>/#/interview/?id=<%= _id %>&type=<%= adminKey %>" trget="_blank">http://<%= locationHost %>/#/interview/?id=<%= _id %>&type=<%= adminKey %></a></p>');
 
-var inviteTemplate = '<h3><%=content %></h3>' +
+var inviteTemplate = _.template('<h3><%=content %></h3>' +
     '<h5>인터뷰 페이지 접속 url</h5>' +
-    '<p>&nbsp; <a href="http://<%= locationHost %>/#/interview/?id=<%= id %>&type=<%= key %>" trget="_blank">http://<%= locationHost %>/#/interview/?id=<%= id %>&type=<%= key %></a></p>';
+    '<p>&nbsp; <a href="http://<%= locationHost %>/#/interview/?id=<%= id %>&type=<%= key %>" trget="_blank">http://<%= locationHost %>/#/interview/?id=<%= id %>&type=<%= key %></a></p>');
 
 // 코딩 인터뷰 페이지
 exports.interview = function(req, res) {
@@ -66,7 +66,8 @@ exports.sendInviteMail = function(req, res) {
         key : req.body.key,
         content : content
       };
-  mail.sendMail(email, content, _.template(inviteTemplate, hData));
+
+  mail.sendMail(email, content, inviteTemplate(hData));
   res.send();
 };
 
@@ -91,7 +92,7 @@ exports.createInterview = function(req, res) {
 
   model.create(hData, function(err, hResult){
     hResult.locationHost = locationHost;
-    mail.sendMail(email, '코딩 인터뷰 페이지를 생성했습니다.', _.template(interviewTemplate, hResult));
+    mail.sendMail(email, '코딩 인터뷰 페이지를 생성했습니다.', interviewTemplate(hResult));
     res.send(hResult);
   });
 };

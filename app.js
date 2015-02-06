@@ -14,7 +14,7 @@ var express = require('express')
 var app = express();
 
 // all environments
-app.set('port', process.env.PORT || 3001);
+app.set('port', process.env.PORT || 3030);
 app.set('views', __dirname + '/views');
 
 app.use(express.logger('dev'));

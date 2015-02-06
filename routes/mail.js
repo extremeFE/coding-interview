@@ -2,7 +2,7 @@
 var nodemailer = require("nodemailer");
 
 // create reusable transport method (opens pool of SMTP connections)
-var smtpTransport = nodemailer.createTransport("SMTP",{
+var smtpTransport = nodemailer.createTransport({
   service: "Gmail",
   auth: {
     user: "realtime.coding.interview@gmail.com",
